@@ -19,7 +19,7 @@ parameters:
     values:
       - all-services
       - SharedInfra
-      - SharedServies        
+      - SharedServices        
 
 variables:
   - group: PIP-APIM-Common
@@ -73,8 +73,8 @@ stages:
             resourceGroupName: 'sharedinfra'
             resourcePrefix: 'pipapim'
             terraformVersion: ${{ variables.terraformVersion }}
-        - ${{ if or(eq(parameters.deployTo, 'all-services'), eq(parameters.deployTo, 'SharedServies'))}}:
-          - name: SharedServies
+        - ${{ if or(eq(parameters.deployTo, 'all-services'), eq(parameters.deployTo, 'SharedServices'))}}:
+          - name: SharedServices
             displayName: 'Shared Services'
             resourceGroupName: 'sharedservices-state'
             resourcePrefix: 'pipss'
@@ -105,8 +105,8 @@ stages:
             resourceGroupName: 'sharedinfra'
             resourcePrefix: 'pipapim'
             terraformVersion: ${{ variables.terraformVersion }}
-        - ${{ if or(eq(parameters.deployTo, 'all-services'), eq(parameters.deployTo, 'SharedServies'))}}:
-          - name: SharedServies
+        - ${{ if or(eq(parameters.deployTo, 'all-services'), eq(parameters.deployTo, 'SharedServices'))}}:
+          - name: SharedServices
             displayName: 'Shared Services'
             resourceGroupName: 'sharedservices-state'
             resourcePrefix: 'pipss'
@@ -137,8 +137,8 @@ stages:
             resourceGroupName: 'sharedinfra'
             resourcePrefix: 'pipapim'
             terraformVersion: ${{ variables.terraformVersion }}
-        - ${{ if or(eq(parameters.deployTo, 'all-services'), eq(parameters.deployTo, 'SharedServies'))}}:
-          - name: SharedServies
+        - ${{ if or(eq(parameters.deployTo, 'all-services'), eq(parameters.deployTo, 'SharedServices'))}}:
+          - name: SharedServices
             displayName: 'Shared Services'
             resourceGroupName: 'sharedservices-state'
             resourcePrefix: 'pipss'
