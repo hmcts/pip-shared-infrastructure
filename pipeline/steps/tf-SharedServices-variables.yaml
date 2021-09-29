@@ -69,4 +69,4 @@ steps:
       ${{ each secret in parameters.libarySecrets }}:
         ${{ secret.name }}: ${{ secret.value }}
       ${{ each variable in variables }}:
-        ${{ variable.name: ${{ variable.value }}
+        ${{ variable.name }}: ${{ variable.value }}
