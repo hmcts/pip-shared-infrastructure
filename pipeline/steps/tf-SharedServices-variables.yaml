@@ -20,7 +20,7 @@ parameters:
     type: object
     default:
       - secret:
-          name: tf_secret_gov-uk-notify-api-testing-key
+          name: govserect
           value: $(tf_secret_gov-uk-notify-api-testing-key)
 
 steps:
@@ -33,6 +33,8 @@ steps:
         $variableName="${{ parameters.variableName }}"
         $secureFileJson=$(printenv secure_file_json)
         $variableGroupJson=$(printenv variable_group_json)
+        $secver = $env:govserect
+        Write-Host "secr: $secver"
 
         $variables=""
         $variables="-var-file=`"$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars`""
