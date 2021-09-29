@@ -27,7 +27,7 @@ steps:
         $variableName="${{ parameters.variableName }}"
         $secureFileJson=$(printenv secure_file_json)
         $variableGroupJson=$(printenv variable_group_json)
-        $notifyKey="$(notifyKey)"
+        $notifyKey=$env:notifyKey
         Write-Host "notifyKey: $notifyKey"
 
         $variables=""
