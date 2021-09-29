@@ -38,3 +38,4 @@ ping_tests = [
     pingText     = ""
   }
 ]
+environment = "dev"

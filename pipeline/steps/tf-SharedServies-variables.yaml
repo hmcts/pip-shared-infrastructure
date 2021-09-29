@@ -1,0 +1,38 @@
+parameters:
+  - name: variableName
+    type: string
+  - name: environment
+    type: string
+  - name: subscriptionName
+    type: string
+  - name: outputLocation
+    type: string
+  - name: resourceGroup
+    type: string
+    default: ""
+  - name: builtFrom
+    type: string
+    default: ""
+  - name: product
+    type: string
+    default: ""
+
+steps:
+
+  - bash: |
+      variableName="${{ parameters.variableName }}"
+      secureFileJson=$(printenv secure_file_json)
+      variableGroupJson=$(printenv variable_group_json)
+
+      variables=""
+      variables="-var-file=\"$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars\""
+      variables="${variables} -var-file=\"$(System.DefaultWorkingDirectory)/environments/shared.tfvars\""
+      variables="${variables} -out=\"${{ parameters.outputLocation }}\""
+      variables="${variables} -var \"builtFrom=${{ parameters.builtFrom }} \""
+      variables="${variables} -var \"product=${{ parameters.product }}\""
+
+      echo "Variables set as: "
+      echo "${variables}"
+      echo "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
+    displayName: 'Set Shared Services TF Variables'
+    name: tfVariables

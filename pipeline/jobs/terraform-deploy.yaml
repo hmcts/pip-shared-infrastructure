@@ -4,6 +4,7 @@ parameters:
 
   - name: dependsOn
     type: string
+    default: '[]'
 
   - name: resourceGroup
     type: string
@@ -35,38 +36,52 @@ parameters:
     type: string
     default: ''
 
-  - name: laSubId
+  - name: outputName
+    type: string
+
+  - name: workingDirectory
+    type: string
+  - name: serviceName
     type: string
 
 jobs:
 - job: Terraform
-  dependsOn:
-  - ${{ if parameters.dependsOn }}:
-    - ${{ parameters.dependsOn }}
   displayName: ${{ parameters.displayName }}
   pool:
     vmImage: 'ubuntu-20.04'
   variables:
     ${{ insert }}: ${{ parameters.variables }}
   steps:
+  - download: current
+    artifact: '${{ parameters.outputName }}'
+    displayName: 'Download ${{ parameters.outputName }}.tfplan'
   - template: ../steps/tf-install.yaml
-  - template: ../steps/tf-test.yaml
+  - bash: |
+      echo "Resource Group: ${{ variables.resourceGroup }}"
+      echo "Storage Account: ${{ variables.storageAccount }}"
+      echo "Container Name: ${{ variables.containerName }}"
   - template: ../steps/tf-init.yaml
     parameters:
       subscription: ${{ parameters.subscription }}
       environment: ${{ parameters.environment }}
-      resourceGroup: $(resourceGroup)
-      storageAccount: $(storageAccount)
-      containerName: $(containerName)
-  - template: ../steps/tf-plan.yaml
+      resourceGroup: ${{ variables.resourceGroup }}
+      storageAccount: ${{ variables.storageAccount }}
+      containerName: ${{ variables.containerName }}
+      workingDirectory: ${{ parameters.workingDirectory }}
+
+  - template: ../steps/tf-${{ parameters.serviceName }}-variables.yaml
     parameters:
-      subscription: ${{ parameters.subscription }}
+      variableName: "varValue"
       resourceGroup: $(resourceGroup)
       environment: ${{ parameters.environment }}
       builtFrom: ${{ parameters.builtFrom }}
       product: ${{ parameters.product }}
-      laSubId: ${{ parameters.laSubId }}
+      outputLocation: '$(Build.SourcesDirectory)/plans/${{ parameters.outputName }}.tfplan'
+      subscriptionName: ${{ parameters.subscription }}
+
   - template: ../steps/tf-apply.yaml
     parameters:
       subscription: ${{ parameters.subscription }}
       environment: ${{ parameters.environment }}
+      workingDirectory: ${{ parameters.workingDirectory }}
+      planLocation: '$(Pipeline.Workspace)/${{parameters.outputName}}/${{parameters.outputName}}.tfplan'

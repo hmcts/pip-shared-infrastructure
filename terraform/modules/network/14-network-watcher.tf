@@ -11,10 +11,10 @@ module "network_watcher_sa" {
   resource_group_name = var.resource_group
   location            = var.location
 
-  account_tier              = "Standard"
-  account_kind              = "StorageV2"
-  account_replication_type  = "LRS"
-  
+  account_tier             = "Standard"
+  account_kind             = "StorageV2"
+  account_replication_type = "LRS"
+
   team_name    = "PIP DevOps"
   team_contact = "#vh-devops"
 }

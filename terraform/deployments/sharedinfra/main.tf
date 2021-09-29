@@ -16,7 +16,7 @@ module "ctags" {
 }
 
 module "network" {
-  source                        = "../modules/network"
+  source                        = "../../modules/network"
   environment                   = var.environment
   resource_group                = local.resource_group_name
   product                       = local.product
@@ -33,7 +33,7 @@ module "network" {
 }
 
 module "postgresql" {
-  source         = "../modules/postgresql"
+  source         = "../../modules/postgresql"
   environment    = var.environment
   resource_group = local.resource_group_name
   location       = var.location
@@ -43,7 +43,7 @@ module "postgresql" {
 }
 
 module "app-insights" {
-  source         = "../modules/app-insights"
+  source         = "../../modules/app-insights"
   environment    = var.environment
   resource_group = local.resource_group_name
   location       = var.location
