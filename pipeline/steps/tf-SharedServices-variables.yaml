@@ -33,8 +33,6 @@ steps:
         $variableName="${{ parameters.variableName }}"
         $secureFileJson=$(printenv secure_file_json)
         $variableGroupJson=$(printenv variable_group_json)
-        $notifyKey=$env:tf_secret_gov-uk-notify-api-testing-key
-        Write-Host "notifyKey: $notifyKey"
 
         $variables=""
         $variables="-var-file=`"$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars`""
