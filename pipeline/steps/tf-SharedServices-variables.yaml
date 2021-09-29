@@ -16,6 +16,12 @@ parameters:
   - name: product
     type: string
     default: ""
+  - name: libarySecrets
+    type: object
+    default:
+      - secret:
+          name: tf_secret_gov-uk-notify-api-testing-key
+          value: $(tf_secret_gov-uk-notify-api-testing-key)
 
 steps:
   - task: PowerShell@2
@@ -27,7 +33,7 @@ steps:
         $variableName="${{ parameters.variableName }}"
         $secureFileJson=$(printenv secure_file_json)
         $variableGroupJson=$(printenv variable_group_json)
-        $notifyKey=$env:notifyKey
+        $notifyKey=$env:tf_secret_gov-uk-notify-api-testing-key
         Write-Host "notifyKey: $notifyKey"
 
         $variables=""
@@ -41,6 +47,7 @@ steps:
         $envs = Get-ChildItem env:* | sort-object name
         Foreach ($env in $envs) { 
           $name=$env.Name 
+          Write-Host "processing $name"
           if ($name -like "tf_secret_*"){
             $value=$env.Value
             Write-Host "Adding ENV: $name"
@@ -52,10 +59,14 @@ steps:
         }
         $secretStr = $secretArr | ConvertTo-Json -Compress -Depth 100
         $secretStr = $secretStr -replace "`"", "\`""
+        Write-Host "secrets $secretStr"
         $variables="${variables} -var `"secrets_arr=[$secretStr]`""
 
         Write-Host "Variables set as: "
         Write-Host "${variables}"
         Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
     env:
-      notifyKey: $(tf_secret_gov-uk-notify-api-testing-key)
+      ${{ each secret in parameters.libarySecrets }}:
+        $secret.name: $secret.value
+      ${{ each variable in variables }}:
+        $variable.name: $variable.value
