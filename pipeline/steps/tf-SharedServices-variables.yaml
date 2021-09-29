@@ -23,6 +23,7 @@ steps:
       variableName="${{ parameters.variableName }}"
       secureFileJson=$(printenv secure_file_json)
       variableGroupJson=$(printenv variable_group_json)
+      notifyKey="$(notifyKey)"
 
       variables=""
       variables="-var-file=\"$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars\""
@@ -31,8 +32,22 @@ steps:
       variables="${variables} -var \"builtFrom=${{ parameters.builtFrom }} \""
       variables="${variables} -var \"product=${{ parameters.product }}\""
 
+      secret_arr=""
+      for var in "${!tf_secret_@}"; do
+        envName="$var"
+        if [[ "${envName}" == 'tf_secret_'* ]]; then
+          envName="${envName//tf_secret_/}"
+          envValue="${!var}"
+          echo "found $envName"
+          secret_arr="${secret_arr}{name:${envName},value:${envValue}},"
+        fi
+      done
+      variables="${variables} -var \"secrets_arr=[${secret_arr}]\""
+
       echo "Variables set as: "
       echo "${variables}"
       echo "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
     displayName: 'Set Shared Services TF Variables'
     name: tfVariables
+    env:
+      notifyKey: $(tf_gov-uk-notify-api-testing-key)
