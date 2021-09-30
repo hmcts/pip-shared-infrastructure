@@ -67,4 +67,4 @@ steps:
         Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
     env:
       ${{ each secret in parameters.libarySecrets }}:
-        - ${{ secret.name }}: $(${{ secret.value }})
+        ${{ secret.name }}: $(${{ secret.value }})
