@@ -19,10 +19,8 @@ parameters:
   - name: libarySecrets
     type: object
     default:
-      - secName: "govserect"
+      - secName: "tf_secret_gov-uk-notify-api-testing-key"
         secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
-      - secName: "testerenv"
-        secValue: "Mytest"
 
 steps:
   - task: PowerShell@2
@@ -34,8 +32,6 @@ steps:
         $variableName="${{ parameters.variableName }}"
         $secureFileJson=$(printenv secure_file_json)
         $variableGroupJson=$(printenv variable_group_json)
-        $secver = $env:testerenv
-        Write-Host "secr: $secver"
 
         $variables=""
         $variables="-var-file=`"$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars`""
@@ -53,7 +49,7 @@ steps:
             $value=$env.Value
             Write-Host "Adding ENV: $name"
             $secretArr += @{
-              name = $name
+              name = $name.Replace("tf_secret_","")
               value = $value
             }
           }
