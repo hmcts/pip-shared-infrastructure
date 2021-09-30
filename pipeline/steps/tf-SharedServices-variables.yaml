@@ -44,7 +44,6 @@ steps:
         $envs = Get-ChildItem env:* | sort-object name
         Foreach ($env in $envs) { 
           $name=$env.Name 
-          Write-Host "processing $name"
           if ($name -like "tf_secret_*"){
             $value=$env.Value
             Write-Host "Adding ENV: $name"
@@ -60,8 +59,8 @@ steps:
         $variables="${variables} -var `"secrets_arr=[$secretStr]`""
 
         Write-Host "Variables set as: "
-        Write-Host "${variables}"
-        Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
+        Write-Host "$variables"
+        Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]$variables"
     env:
       ${{ each sec in parameters.libarySecrets }}:
         "${{ sec.secName }}_env" : "${{ sec.secValue }}"
