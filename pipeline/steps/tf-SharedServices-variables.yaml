@@ -30,7 +30,6 @@ steps:
       variableName: "secrets"
       taskName: "group"
 
-
   - powershell: |
       $jsonPath="$env:groupJsonPath"
 
@@ -49,6 +48,27 @@ steps:
     name: "secret"
     env:
       groupJsonPath: $(group.secrets_path)
+
+  - bash: |
+      
+      env -0 | while IFS='=' read -r -d '' n v; do
+        envName="$n"
+        echo "processing $envName"
+        if [[ "${envName}" == 'tf_secret_'* ]]; then
+          envName="${envName//tf_secret_/}"
+          envValue="$v"
+          echo "found $envName"
+          echo "{\\\"name\\\":\\\"$envName\\\",\\\"value\\\":\\\"$envValue\\\"},"
+          #echo "found $secretArr"
+        fi
+      done
+    displayName: 'Print Variables'
+    name: tfVariablesPrint
+    env:
+      ${{ each var in variables }}:
+        "${{ var.Key }}" : "${{ var.Key }}"
+      ${{ each sec in variables.names }}:
+        "${{ sec }}" : "$(${{ sec }})"
 
   - bash: |
       variableName="${{ parameters.variableName }}"
