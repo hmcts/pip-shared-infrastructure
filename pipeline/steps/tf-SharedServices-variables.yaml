@@ -18,13 +18,6 @@ parameters:
     default: ""
   - name: libarySecrets
     type: object
-    default:
-      - secret:
-          secName: "govserect"
-          secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
-      - secret:
-          name: "testerenv"
-          secValue: "Mytest"
 
 steps:
   - task: PowerShell@2
