@@ -24,7 +24,11 @@ parameters:
 
 steps:
   - bash: |
-      
+      for var in "$@"
+      do
+          echo "variables $var"
+      done
+
       env -0 | while IFS='=' read -r -d '' n v; do
         envName="$n"
         echo "processing $envName"
@@ -37,6 +41,9 @@ steps:
         fi
       done
     displayName: 'printer'
+    arguments: >
+      ${{ each var in variables }}:
+        "${{ var.Key }}"
     env:
       ${{ each var in variables }}:
         "${{ var.Key }}" : "$(${{ var.Key }})"
