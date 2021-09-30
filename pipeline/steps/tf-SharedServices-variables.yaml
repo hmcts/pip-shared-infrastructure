@@ -27,6 +27,7 @@ steps:
     displayName: 'Set Shared Services TF Variables'
     name: tfVariables
     inputs:
+      failOnStderr: false
       targetType: inline
       script: |
         $variableName="${{ parameters.variableName }}"
