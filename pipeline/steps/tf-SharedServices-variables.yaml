@@ -42,7 +42,7 @@ steps:
           envName="${envName//tf_secret_/}"
           envValue="$v"
           #echo "found $envName"
-          echo "{\"name\":\"$envName\",\"value\":\"$envValue\"},"
+          echo "{\\\"name\\\":\\\"$envName\\\",\\\"value\\\":\\\"$envValue\\\"},"
           #echo "found $secretArr"
         fi
       done)
