@@ -56,4 +56,4 @@ steps:
     name: tfVariables
     env:
       ${{ each sec in parameters.libarySecrets }}:
-        "${{ sec.secName }}_env" : "${{ sec.secValue }}"
+        "${{ sec.secName }}" : "${{ sec.secValue }}"
