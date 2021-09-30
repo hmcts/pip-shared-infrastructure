@@ -23,45 +23,37 @@ parameters:
         secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
 
 steps:
-  - task: PowerShell@2
+
+  - bash: |
+      variableName="${{ parameters.variableName }}"
+      secureFileJson=$(printenv secure_file_json)
+      variableGroupJson=$(printenv variable_group_json)
+      variables=""
+      variables="-var-file=\"$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars\""
+      variables="${variables} -var-file=\"$(System.DefaultWorkingDirectory)/environments/shared.tfvars\""
+      variables="${variables} -out=\"${{ parameters.outputLocation }}\""
+      variables="${variables} -var \"builtFrom=${{ parameters.builtFrom }} \""
+      variables="${variables} -var \"product=${{ parameters.product }}\""
+
+      secretArr=""
+      for var in "${!tf_secret_@}"; do
+          envName="$var"
+          echo "processing $envName"
+          if [[ "${envName}" == 'tf_secret_'* ]]; then
+            envName="${envName//tf_secret_/}"
+            envValue="${!var}"
+            echo "found $envName"
+            secretArr="${secretArr} {\"name\":\"$envName\",\"value\":\"$envValue\"},"
+          fi
+      done
+      secretArr="[${secretArr}]"
+      variables="${variables} -var \"secrets_arr=${secretArr}\""
+
+      echo "Variables set as: "
+      echo "${variables}"
+      echo "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
     displayName: 'Set Shared Services TF Variables'
     name: tfVariables
-    inputs:
-      failOnStderr: false
-      targetType: inline
-      script: |
-        $variableName="${{ parameters.variableName }}"
-        $secureFileJson=$(printenv secure_file_json)
-        $variableGroupJson=$(printenv variable_group_json)
-
-        $variables=""
-        $variables="-var-file=$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars"
-        $variables="${variables} -var-file=$(System.DefaultWorkingDirectory)/environments/shared.tfvars"
-        $variables="${variables} -out=${{ parameters.outputLocation }}"
-        $variables="${variables} -var builtFrom=${{ parameters.builtFrom }}"
-        $variables="${variables} -var product=${{ parameters.product }}"
-
-        $secretArr=@();
-        $envs = Get-ChildItem env:* | sort-object name
-        Foreach ($env in $envs) { 
-          $name=$env.Name 
-          if ($name -like "tf_secret_*"){
-            $value=$env.Value
-            Write-Host "Adding ENV: $name"
-            $secretArr += @{
-              name = $name.Replace("tf_secret_","")
-              value = $value
-            }
-          }
-        }
-        $secretStr = $secretArr | ConvertTo-Json -Compress -Depth 100
-        $secretStr = $secretStr -replace "`"", "\``""
-        Write-Host "secrets $secretStr"
-        $variables="${variables} -var secrets_arr=[$secretStr]"
-
-        Write-Host "Variables set as: "
-        Write-Host "$variables"
-        Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]`"$variables`""
     env:
       ${{ each sec in parameters.libarySecrets }}:
         "${{ sec.secName }}_env" : "${{ sec.secValue }}"
