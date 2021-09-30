@@ -55,7 +55,7 @@ steps:
           }
         }
         $secretStr = $secretArr | ConvertTo-Json -Compress -Depth 100
-        $secretStr = $secretStr -replace "`"", "\`""
+        $secretStr = $secretStr -replace "`"", "\``""
         Write-Host "secrets $secretStr"
         $variables="${variables} -var secrets_arr=[$secretStr]"
 
