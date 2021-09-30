@@ -35,11 +35,11 @@ steps:
         $variableGroupJson=$(printenv variable_group_json)
 
         $variables=""
-        $variables="-var-file=`"$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars`""
-        $variables="${variables} -var-file=`"$(System.DefaultWorkingDirectory)/environments/shared.tfvars`""
-        $variables="${variables} -out=`"${{ parameters.outputLocation }}`""
-        $variables="${variables} -var `"builtFrom=${{ parameters.builtFrom }} `""
-        $variables="${variables} -var `"product=${{ parameters.product }}`""
+        $variables="-var-file=$(System.DefaultWorkingDirectory)/environments/${{ parameters.environment }}.tfvars"
+        $variables="${variables} -var-file=$(System.DefaultWorkingDirectory)/environments/shared.tfvars"
+        $variables="${variables} -out=${{ parameters.outputLocation }}"
+        $variables="${variables} -var builtFrom=${{ parameters.builtFrom }}"
+        $variables="${variables} -var product=${{ parameters.product }}"
 
         $secretArr=@();
         $envs = Get-ChildItem env:* | sort-object name
@@ -57,7 +57,7 @@ steps:
         $secretStr = $secretArr | ConvertTo-Json -Compress -Depth 100
         $secretStr = $secretStr -replace "`"", "\`""
         Write-Host "secrets $secretStr"
-        $variables="${variables} -var `"secrets_arr=[$secretStr]`""
+        $variables="${variables} -var secrets_arr=[$secretStr]"
 
         Write-Host "Variables set as: "
         Write-Host "$variables"
