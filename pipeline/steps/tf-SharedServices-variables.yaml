@@ -19,12 +19,10 @@ parameters:
   - name: libarySecrets
     type: object
     default:
-      - secret:
-          secName: "govserect"
-          secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
-      - secret:
-          name: "testerenv"
-          secValue: "Mytest"
+      - secName: "govserect"
+        secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
+      - secName: "testerenv"
+        secValue: "Mytest"
 
 steps:
   - task: PowerShell@2
@@ -70,4 +68,4 @@ steps:
         Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
     env:
       ${{ each sec in parameters.libarySecrets }}:
-        "${{ convertToJson(sec) }}_env" : "${{ sec.secValue }}"
+        "${{ sec.secName }}_env" : "${{ sec.secValue }}"
