@@ -63,4 +63,4 @@ steps:
         Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
     env:
       ${{ each sec in parameters.libarySecrets }}:
-        "${{ sec }}_env" : "${{ sec.secValue }}"
+        "${{ convertToJson(sec) }}_env" : "${{ sec.secValue }}"
