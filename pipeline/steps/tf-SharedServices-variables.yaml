@@ -20,11 +20,11 @@ parameters:
     type: object
     default:
       - secret:
-          name: "govserect"
-          value: "$(tf_secret_gov-uk-notify-api-testing-key)"
+          secName: "govserect"
+          secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
       - secret:
           name: "testerenv"
-          value: "Mytest"
+          secValue: "Mytest"
 
 steps:
   - task: PowerShell@2
@@ -69,5 +69,5 @@ steps:
         Write-Host "${variables}"
         Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
     env:
-      ${{ each secret in parameters.libarySecrets }}:
-        ${{ secret.name }} : "${{ secret.value }}"
+      ${{ each sec in parameters.libarySecrets }}:
+        ${{ sec.secName }} : "${{ sec.secValue }}"
