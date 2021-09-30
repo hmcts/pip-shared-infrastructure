@@ -36,12 +36,12 @@ steps:
       variables="${variables} -var \"product=${{ parameters.product }}\""
 
       secretArr=""
-      for var in "${!tf_secret_@}"; do
-          envName="$var"
+      env -0 | while IFS='=' read -r -d '' n v; do
+          envName="$n"
           echo "processing $envName"
           if [[ "${envName}" == 'tf_secret_'* ]]; then
             envName="${envName//tf_secret_/}"
-            envValue="${!var}"
+            envValue="$v"
             echo "found $envName"
             secretArr="${secretArr} {\"name\":\"$envName\",\"value\":\"$envValue\"},"
           fi
