@@ -39,9 +39,7 @@ steps:
     displayName: 'printer'
     env:
       ${{ each var in variables }}:
-        "${{ var.Key }}" : "${{ var.Value }}"
-      ${{ each varJ in variables }}:
-        "${{ convertToJson(varJ) }}" : "${{ varJ.value }}"
+        "${{ var.Key }}" : "$(${{ var.Key }})"
 
   - bash: |
       variableName="${{ parameters.variableName }}"
