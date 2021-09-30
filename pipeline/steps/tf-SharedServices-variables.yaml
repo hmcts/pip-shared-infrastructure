@@ -41,7 +41,7 @@ steps:
         $name=$_.Name
         if ($name -like "tf_secret_*"){
           Write-Host "Found: $name"
-          $names+=",$name"
+          $names+="$name;"
         }
       }
       "##vso[task.setvariable variable=names;isOutput=true]$names"
@@ -61,10 +61,16 @@ steps:
       variables="${variables} -var \"builtFrom=${{ parameters.builtFrom }} \""
       variables="${variables} -var \"product=${{ parameters.product }}\""
 
-      variable="$names"
-      secretArr=$(for i in ${variable//,/ }
-      do
-        echo "{\\\"name\\\":\\\"$i\\\",\\\"value\\\":\\\"$($i)\\\"},"
+      secretArr=$(env -0 | while IFS='=' read -r -d '' n v; do
+        envName="$n"
+        #echo "processing $envName"
+        if [[ "${envName}" == 'tf_secret_'* ]]; then
+          envName="${envName//tf_secret_/}"
+          envValue="$v"
+          #echo "found $envName"
+          echo "{\\\"name\\\":\\\"$envName\\\",\\\"value\\\":\\\"$envValue\\\"},"
+          #echo "found $secretArr"
+        fi
       done)
       secretArr="[${secretArr}]"
       variables="${variables} -var \"secrets_arr=${secretArr}\""
@@ -75,6 +81,5 @@ steps:
     displayName: 'Set Shared Services TF Variables'
     name: tfVariables
     env:
-      names: $(secret.names)
-      ${{ each sec in parameters.libarySecrets }}:
-        "${{ sec.secName }}" : "${{ sec.secValue }}"
+      ${{ each sec in $(secret.names) }}:
+        "${{ sec }}" : "$(${{ sec }})"
