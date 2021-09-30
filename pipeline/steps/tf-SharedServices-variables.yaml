@@ -23,6 +23,25 @@ parameters:
         secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
 
 steps:
+  - bash: |
+      
+      env -0 | while IFS='=' read -r -d '' n v; do
+        envName="$n"
+        echo "processing $envName"
+        if [[ "${envName}" == 'tf_secret_'* ]]; then
+          envName="${envName//tf_secret_/}"
+          envValue="$v"
+          #echo "found $envName"
+          echo "{\\\"name\\\":\\\"$envName\\\",\\\"value\\\":\\\"$envValue\\\"},"
+          #echo "found $secretArr"
+        fi
+      done
+    displayName: 'printer'
+    env:
+      ${{ each var in variables }}:
+        "${{ var.Key }}" : "${{ var.Value }}"
+      ${{ each varJ in variables }}:
+        "${{ convertToJson(varJ) }}" : "${{ varJ.value }}"
 
   - bash: |
       variableName="${{ parameters.variableName }}"
