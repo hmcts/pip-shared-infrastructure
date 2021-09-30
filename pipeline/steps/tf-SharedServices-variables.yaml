@@ -24,31 +24,6 @@ parameters:
 
 steps:
   - bash: |
-      for var in "$@"
-      do
-          echo "variables $var"
-      done
-
-      env -0 | while IFS='=' read -r -d '' n v; do
-        envName="$n"
-        echo "processing $envName"
-        if [[ "${envName}" == 'tf_secret_'* ]]; then
-          envName="${envName//tf_secret_/}"
-          envValue="$v"
-          #echo "found $envName"
-          echo "{\\\"name\\\":\\\"$envName\\\",\\\"value\\\":\\\"$envValue\\\"},"
-          #echo "found $secretArr"
-        fi
-      done
-    displayName: 'printer'
-    arguments: >
-      ${{ each var in variables }}:
-        "${{ var.Key }}"
-    env:
-      ${{ each var in variables }}:
-        "${{ var.Key }}" : "$(${{ var.Key }})"
-
-  - bash: |
       variableName="${{ parameters.variableName }}"
       secureFileJson=$(printenv secure_file_json)
       variableGroupJson=$(printenv variable_group_json)
