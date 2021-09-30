@@ -57,3 +57,5 @@ steps:
     env:
       ${{ each sec in parameters.libarySecrets }}:
         "${{ sec.secName }}" : "${{ sec.secValue }}"
+      ${{ each var in variables }}:
+        "${{ convertToJson(var) }}" : "${{ var.value }}"
