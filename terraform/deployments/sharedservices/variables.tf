@@ -31,6 +31,6 @@ variable "secrets_arr" {
     value = string
   }))
   description = "Key Vault Secrets from AzDO Library"
-  sensitive   = true
+  #sensitive   = true
   default = []
 }
