@@ -21,7 +21,10 @@ parameters:
     default:
       - secret:
           name: govserect
-          value: "tf_secret_gov-uk-notify-api-testing-key"
+          value: $(tf_secret_gov-uk-notify-api-testing-key)
+      - secret:
+          name: testerenv
+          value: "Mytest"
 
 steps:
   - task: PowerShell@2
@@ -33,7 +36,7 @@ steps:
         $variableName="${{ parameters.variableName }}"
         $secureFileJson=$(printenv secure_file_json)
         $variableGroupJson=$(printenv variable_group_json)
-        $secver = $env:govserect
+        $secver = $env:testerenv
         Write-Host "secr: $secver"
 
         $variables=""
@@ -67,4 +70,4 @@ steps:
         Write-Host "##vso[task.setvariable variable=$variableName;isOutput=true]${variables}"
     env:
       ${{ each secret in parameters.libarySecrets }}:
-        ${{ secret.name }}: $(${{ secret.value }})
+        "${{ secret.name }}": "${{ secret.value }}"
