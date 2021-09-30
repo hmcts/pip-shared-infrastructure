@@ -26,7 +26,7 @@ steps:
   - template: templates\common\get-variable-group.yml@azTemplates
     parameters:
       subscriptionName: ${{ parameters.subscriptionName }}
-      variableGroupName: "PIP-APIM-BUILD-${{ parameters.environment }}"
+      variableGroupName: "PIP-APIM-BUILD-${{ upper(parameters.environment) }}"
       variableName: "secrets"
       taskName: "group"
 
