@@ -61,13 +61,6 @@ jobs:
       product: ${{ parameters.product }}
       outputLocation: '$(Build.SourcesDirectory)/plans/${{ parameters.outputName }}.tfplan'
       subscriptionName: ${{ parameters.subscription }}
-      libarySecrets: 
-        - secret:
-            secName: "govserect"
-            secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
-        - secret:
-            name: "testerenv"
-            secValue: "Mytest"
 
   - template: ../steps/tf-plan.yaml
     parameters:
