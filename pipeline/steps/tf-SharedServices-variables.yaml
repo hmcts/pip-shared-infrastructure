@@ -41,6 +41,7 @@ steps:
         if ($name -like "tf_secret_*"){
           Write-Host "Found: $name"
           $names+="`"$name`","
+          Write-Host "value: $($name)"
         }
       }
       $names+="]"
@@ -53,8 +54,8 @@ steps:
 
   - template: ../set-secrets.yaml
     parameters: 
-      #secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
-      secretNames: $(getSecret.names)
+      secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
+      #secretNames: $(getSecret.names)
       secretNames2: ["Secrets0","Secrets1","Secrets2","Secrets3"]
 
   - bash: |
