@@ -51,7 +51,7 @@ steps:
 
   - template: ../set-secrets.yaml
     parameters: 
-      secretNames: $(secret.names)
+      secretNames: "$(secret.names)"
 
   - bash: |
       
