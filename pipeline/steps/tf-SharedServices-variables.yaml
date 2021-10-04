@@ -44,7 +44,7 @@ steps:
           Write-Host "Found: $name"
           $names+="`"$name`","
           $yamlNames+="      - $name `r`n"
-          $envNames+="      $name:$($name)"
+          $envNames+="      $name`:$($name)"
         }
       }
       $names+="]"
