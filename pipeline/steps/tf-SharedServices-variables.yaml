@@ -35,7 +35,7 @@ steps:
 
       $variablesJson = Get-Content $jsonPath | Out-String | ConvertFrom-Json
 
-      $names="["
+      $names=""
       $variablesJson.variables.PSObject.Properties | ForEach-Object {
         $name=$_.Name
         if ($name -like "tf_secret_*"){
@@ -43,7 +43,6 @@ steps:
           $names+="`"$name`","
         }
       }
-      $names+="]"
       "##vso[task.setvariable variable=names;isOutput=true]$names"
     displayName: 'get secret names'
     name: "secret"
@@ -52,7 +51,7 @@ steps:
 
   - template: ../set-secrets.yaml
     parameters: 
-      secretNames: $[ variables.secret.names ]
+      secretNames: $(secret.names)
 
   - bash: |
       
