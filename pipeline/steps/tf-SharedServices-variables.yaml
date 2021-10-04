@@ -52,7 +52,7 @@ steps:
 
   - template: ../set-secrets.yaml
     parameters: 
-      secretNames: variables.secret.names
+      secretNames: $(secret.names)
 
   - bash: |
       
@@ -71,7 +71,7 @@ steps:
     name: tfVariablesPrint
     env:
       secretJson: "$(secretVars)"
-      ${{ each sec in secretVars }}:
+      ${{ each sec in $(secretVars) }}:
         "${{ sec.Key }}" : "${{ convertToJson(sec) }}"
 
   - bash: |
