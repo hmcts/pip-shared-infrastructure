@@ -51,6 +51,17 @@ steps:
 
   - template: ../set-secrets.yaml
     parameters: 
+      secretNames: '"test1","test2"'
+
+  - bash: |
+      
+      env -0 | while IFS='=' read -r -d '' n v; do
+        envName="$n"
+        echo "processing $envName"
+      done
+    displayName: 'Print Names'
+    name: tfNames
+    env:
       secretNames: "$(secret.names)"
 
   - bash: |
