@@ -52,7 +52,7 @@ steps:
 
   - template: ../set-secrets.yaml
     parameters: 
-      secretNames: ${{ variables.secret.names }}
+      secretNames: $[ variables.secret.names ]
 
   - bash: |
       
