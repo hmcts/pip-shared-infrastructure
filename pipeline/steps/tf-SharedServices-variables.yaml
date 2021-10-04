@@ -58,7 +58,7 @@ steps:
 
   - template: ../set-secrets.yaml
     parameters: 
-      secretNames: ["tf_secret_test1","test2"]
+      secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
       secretNames2: ["Secrets0","Secrets1","Secrets2","Secrets3"]
 
   - bash: |
