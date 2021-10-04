@@ -55,7 +55,7 @@ steps:
       Write-Host $content
       $replaceContent=$content -replace 'REPLACEME',"$yamlNames"
       Write-Host "REPLACE"
-      Write-Host $content
+      Write-Host $replaceContent
       Set-Content -Path $original -Value $replaceContent
       $contentv2=Get-Content -path $original -Raw
       Write-Host "SET"
