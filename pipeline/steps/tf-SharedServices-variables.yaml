@@ -36,12 +36,13 @@ steps:
       $variablesJson = Get-Content $jsonPath | Out-String | ConvertFrom-Json
 
       $names="["
+      $yamlNames=""
       $variablesJson.variables.PSObject.Properties | ForEach-Object {
         $name=$_.Name
         if ($name -like "tf_secret_*"){
           Write-Host "Found: $name"
           $names+="`"$name`","
-          Write-Host "value: $($name)"
+          $yamlNames+="      - $name `r`n"
         }
       }
       $names+="]"
@@ -52,7 +53,7 @@ steps:
       $content=Get-Content -path $original -Raw
       Write-Host "GET"
       Write-Host $content
-      $replaceContent=$content -replace 'REPLACEME',"$names"
+      $replaceContent=$content -replace 'REPLACEME',"$yamlNames"
       Write-Host "REPLACE"
       Write-Host $content
       Set-Content -Path $original -Value $replaceContent
