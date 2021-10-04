@@ -47,17 +47,17 @@ steps:
       $names+="]"
       "##vso[task.setvariable variable=names;isOutput=true]$names"
       Write-Host "Names: $names"
-      
+
       $original="$(Build.SourcesDirectory)\pipeline\set-secrets.yaml"
-      $newPath="$(Build.SourcesDirectory)\pipeline\temp\set-secrets-$(Build.BuildNumber).yaml"
-      Copy-Item $original -Destination $newPath
-      ((Get-Content -path $newPath -Raw) -replace '{{REPLACEME}}','$names') | Set-Content -Path $newPath
+      #$newPath="$(Build.SourcesDirectory)\pipeline\temp\set-secrets-$(Build.BuildNumber).yaml"
+      #Copy-Item $original -Destination $newPath
+      ((Get-Content -path $original -Raw) -replace '{{REPLACEME}}','$names') | Set-Content -Path $original
     displayName: 'get secret names'
     name: "getSecret"
     env:
       groupJsonPath: $(group.secrets_path)
   
-  - template: "../temp/set-secrets-$(Build.BuildNumber).yaml"
+  - template: ../set-secrets.yaml
   #- template: ../set-secrets.yaml
   #  parameters: 
   #    secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
