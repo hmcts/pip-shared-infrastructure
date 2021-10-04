@@ -51,7 +51,7 @@ steps:
       $original="$(Build.SourcesDirectory)\pipeline\set-secrets.yaml"
       #$newPath="$(Build.SourcesDirectory)\pipeline\temp\set-secrets-$(Build.BuildNumber).yaml"
       #Copy-Item $original -Destination $newPath
-      ((Get-Content -path $original -Raw) -replace '{{REPLACEME}}','$names') | Set-Content -Path $original
+      ((Get-Content -path $original -Raw) -replace '{{REPLACEME}}',"$names") | Set-Content -Path $original
     displayName: 'get secret names'
     name: "getSecret"
     env:
