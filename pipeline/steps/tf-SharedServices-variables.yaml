@@ -52,13 +52,13 @@ steps:
       "##vso[task.setvariable variable=names;isOutput=true]$names"
       Write-Host "Names: $names"
     displayName: 'get secret names'
-    name: "secret"
+    name: "getSecret"
     env:
       groupJsonPath: $(group.secrets_path)
 
   - template: ../set-secrets.yaml
     parameters: 
-      secretNames: '"tf_secret_test1","test2'
+      secretNames: '"tf_secret_test1","test2"'
       secretNames2: ["Secrets0","Secrets1","Secrets2","Secrets3"]
 
   - bash: |
@@ -73,9 +73,9 @@ steps:
     displayName: 'Print Variables'
     name: tfVariablesPrint
     env:
-      secretNames: "$(secret.names)"
-      secretJson: "$(secretVars)"
-      ${{ each sec in variables.secretVars }}:
+      secretNames: "$(getSecret.names)"
+      secretJson: "$(setSecretVars)"
+      ${{ each sec in variables.setSecretVars }}:
         "${{ sec.Key }}_sec" : "${{ convertToJson(sec) }}"
 
   - bash: |
