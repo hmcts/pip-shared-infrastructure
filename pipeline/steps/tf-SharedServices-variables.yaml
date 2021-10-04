@@ -23,10 +23,44 @@ parameters:
         secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
 
 steps:
+  - template: templates\common\get-variable-group.yml@azTemplates
+    parameters:
+      subscriptionName: ${{ parameters.subscriptionName }}
+      variableGroupName: "PIP-APIM-BUILD-${{ upper(parameters.environment) }}"
+      variableName: "secrets"
+      taskName: "group"
 
+  - powershell: |
+      $jsonPath="$env:groupJsonPath"
 
+      $variablesJson = Get-Content $jsonPath | Out-String | ConvertFrom-Json
 
-  - bash: |      
+      $names="["
+      $variablesJson.variables.PSObject.Properties | ForEach-Object {
+        $name=$_.Name
+        if ($name -like "tf_secret_*"){
+          Write-Host "Found: $name"
+          $names+="`"$name`","
+        }
+      }
+      $names+="]"
+      "##vso[task.setvariable variable=names;isOutput=true]$names"
+      Write-Host "Names: $names"
+    displayName: 'get secret names'
+    name: "getSecret"
+    env:
+      groupJsonPath: $(group.secrets_path)
+
+  - template: ../set-secrets.yaml
+    parameters: 
+      #secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
+      secretNames: $(getSecret.names)
+      secretNames2: ["Secrets0","Secrets1","Secrets2","Secrets3"]
+
+  - bash: |
+      echo "secretNames -- ${secretNames}"
+      echo "secretJson -- ${secretJson}"
+      
       env -0 | while IFS='=' read -r -d '' n v; do
         envName="$n"
         envValue="$v"
@@ -34,6 +68,11 @@ steps:
       done
     displayName: 'Print Variables'
     name: tfVariablesPrint
+    env:
+      secretNames: "$(getSecret.names)"
+      secretJson: "$(setSecretVars)"
+      ${{ each sec in variables.setSecretVars }}:
+        "${{ sec.Key }}_sec" : "${{ convertToJson(sec) }}"
 
   - bash: |
       variableName="${{ parameters.variableName }}"

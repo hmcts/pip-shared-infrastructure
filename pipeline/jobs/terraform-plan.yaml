@@ -29,7 +29,7 @@ parameters:
     type: string
 
 jobs:
-- job: PlanVariables
+- job: TerraformPlan
   dependsOn:
   - ${{ if parameters.dependsOn }}:
     - ${{ parameters.dependsOn }}
@@ -38,43 +38,6 @@ jobs:
     vmImage: 'ubuntu-20.04'
   variables:
     ${{ insert }}: ${{ parameters.variables }}
-  steps:
-    - template: templates\common\get-variable-group.yml@azTemplates
-      parameters:
-        subscriptionName: ${{ parameters.subscription }}
-        variableGroupName: "PIP-APIM-BUILD-${{ upper(parameters.environment) }}"
-        variableName: "secrets"
-        taskName: "group"
-
-    - powershell: |
-        $jsonPath="$env:groupJsonPath"
-
-        $variablesJson = Get-Content $jsonPath | Out-String | ConvertFrom-Json
-
-        $names="["
-        $variablesJson.variables.PSObject.Properties | ForEach-Object {
-          $name=$_.Name
-          if ($name -like "tf_secret_*"){
-            Write-Host "Found: $name"
-            $names+="`"$name`","
-          }
-        }
-        $names+="]"
-        "##vso[task.setvariable variable=names;isOutput=true]$names"
-        Write-Host "Names: $names"
-      displayName: 'get secret names'
-      name: "getSecret"
-      env:
-        groupJsonPath: $(group.secrets_path)
-
-- job: TerraformPlan
-  dependsOn: PlanVariables
-  displayName: ${{ parameters.displayName }}
-  pool:
-    vmImage: 'ubuntu-20.04'
-  variables:
-    ${{ insert }}: ${{ parameters.variables }}
-    secretVariableName: '"tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"' #$[dependencies.PlanVariables.outputs['getSecret.names']]
   steps:
   - template: ../steps/tf-install.yaml
   - template: ../steps/tf-init.yaml
@@ -98,11 +61,6 @@ jobs:
       product: ${{ parameters.product }}
       outputLocation: '$(Build.SourcesDirectory)/plans/${{ parameters.outputName }}.tfplan'
       subscriptionName: ${{ parameters.subscription }}
-
-  - template: ../set-secrets.yaml
-    parameters: 
-      #secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
-      secretNames: $(secretVariableName)
 
   - template: ../steps/tf-plan.yaml
     parameters:
