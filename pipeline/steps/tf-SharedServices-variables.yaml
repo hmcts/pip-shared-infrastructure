@@ -68,7 +68,7 @@ steps:
       secretNames: "$(secret.names)"
       secretJson: "$(secretVars)"
       ${{ each sec in variables.secretVars }}:
-        "${{ sec.Key }}" : "${{ convertToJson(sec) }}"
+        "${{ sec.Key }}_sec" : "${{ convertToJson(sec) }}"
 
   - bash: |
       variableName="${{ parameters.variableName }}"
