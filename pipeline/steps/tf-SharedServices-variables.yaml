@@ -49,6 +49,10 @@ steps:
     env:
       groupJsonPath: $(group.secrets_path)
 
+  - template: ../set-serects.yaml
+    parameters: 
+      secretNames: variables.secret.names
+
   - bash: |
       
       env -0 | while IFS='=' read -r -d '' n v; do
@@ -65,10 +69,9 @@ steps:
     displayName: 'Print Variables'
     name: tfVariablesPrint
     env:
-      ${{ each var in variables }}:
-        "${{ var.Key }}" : "${{ var.Key }}"
-      ${{ each sec in variables.names }}:
-        "${{ sec }}" : "$(${{ sec }})"
+      secretJson: "${{ convertToJson(secretVars) }}"
+      ${{ each sec in secretVars }}:
+        "${{ sec.Key }}" : "${{ convertToJson(sec) }}"
 
   - bash: |
       variableName="${{ parameters.variableName }}"
