@@ -49,7 +49,7 @@ steps:
     env:
       groupJsonPath: $(group.secrets_path)
 
-  - template: ../set-serects.yaml
+  - template: ../set-secrets.yaml
     parameters: 
       secretNames: variables.secret.names
 
