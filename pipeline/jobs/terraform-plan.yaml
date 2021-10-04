@@ -74,7 +74,7 @@ jobs:
     vmImage: 'ubuntu-20.04'
   variables:
     ${{ insert }}: ${{ parameters.variables }}
-    secretVariableName: $[dependencies.PlanVariables.outputs['getSecret.names']]
+    secretVariableName: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"] #$[dependencies.PlanVariables.outputs['getSecret.names']]
   steps:
   - template: ../steps/tf-install.yaml
   - template: ../steps/tf-init.yaml
