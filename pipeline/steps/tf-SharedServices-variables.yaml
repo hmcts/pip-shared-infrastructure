@@ -55,7 +55,7 @@ steps:
       $replaceContent=$content -replace 'REPLACEME',"$names"
       Write-Host "REPLACE"
       Write-Host $content
-      $replaceContent Set-Content -Path $original
+      Set-Content -Path $original -Value $replaceContent
       $contentv2=Get-Content -path $original -Raw
       Write-Host "SET"
       Write-Host $contentv2
