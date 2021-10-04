@@ -35,14 +35,15 @@ steps:
 
       $variablesJson = Get-Content $jsonPath | Out-String | ConvertFrom-Json
 
-      $names=""
+      $names="["
       $variablesJson.variables.PSObject.Properties | ForEach-Object {
         $name=$_.Name
         if ($name -like "tf_secret_*"){
           Write-Host "Found: $name"
-          $names+="$name;"
+          $names+="`"$name`","
         }
       }
+      $names+="]"
       "##vso[task.setvariable variable=names;isOutput=true]$names"
     displayName: 'get secret names'
     name: "secret"
@@ -69,7 +70,7 @@ steps:
     displayName: 'Print Variables'
     name: tfVariablesPrint
     env:
-      secretJson: "${{ convertToJson(secretVars) }}"
+      secretJson: "$(secretVars)"
       ${{ each sec in secretVars }}:
         "${{ sec.Key }}" : "${{ convertToJson(sec) }}"
 
