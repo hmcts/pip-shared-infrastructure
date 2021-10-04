@@ -55,7 +55,7 @@ steps:
 
   - template: ../set-secrets.yaml
     parameters: 
-      secretNames: ${{ variables.secret.names }}
+      secretNames: $(secret.names)
       secretNames2: ["Secrets0","Secrets1","Secrets2","Secrets3"]
 
   - bash: |
