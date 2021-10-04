@@ -37,12 +37,14 @@ steps:
 
       $names="["
       $yamlNames=""
+      $envNames=""
       $variablesJson.variables.PSObject.Properties | ForEach-Object {
         $name=$_.Name
         if ($name -like "tf_secret_*"){
           Write-Host "Found: $name"
           $names+="`"$name`","
           $yamlNames+="      - $name `r`n"
+          $envNames+="      $name:$($name)"
         }
       }
       $names+="]"
@@ -54,6 +56,7 @@ steps:
       Write-Host "GET"
       Write-Host $content
       $replaceContent=$content -replace '     - REPLACEME',"$yamlNames"
+      Add-Content -Path $original -Value $envNames
       Write-Host "REPLACE"
       Write-Host $replaceContent
       Set-Content -Path $original -Value $replaceContent
