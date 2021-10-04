@@ -54,32 +54,18 @@ steps:
       secretNames: ["test1","test2"]
 
   - bash: |
+      echo "secretNames -- ${secretNames}"
+      echo "secretJson -- ${secretJson}"
       
       env -0 | while IFS='=' read -r -d '' n v; do
         envName="$n"
-        echo "processing $envName"
-      done
-    displayName: 'Print Names'
-    name: tfNames
-    env:
-      secretNames: "$(secret.names)"
-
-  - bash: |
-      
-      env -0 | while IFS='=' read -r -d '' n v; do
-        envName="$n"
-        echo "processing $envName"
-        if [[ "${envName}" == 'tf_secret_'* ]]; then
-          envName="${envName//tf_secret_/}"
-          envValue="$v"
-          echo "found $envName"
-          echo "{\\\"name\\\":\\\"$envName\\\",\\\"value\\\":\\\"$envValue\\\"},"
-          #echo "found $secretArr"
-        fi
+        envValue="$v"
+        echo "processing $envName : $envValue"
       done
     displayName: 'Print Variables'
     name: tfVariablesPrint
     env:
+      secretNames: "$(secret.names)"
       secretJson: "$(secretVars)"
       ${{ each sec in variables.secretVars }}:
         "${{ sec.Key }}" : "${{ convertToJson(sec) }}"
