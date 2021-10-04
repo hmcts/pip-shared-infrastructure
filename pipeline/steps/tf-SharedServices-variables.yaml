@@ -30,68 +30,6 @@ steps:
       variableName: "secrets"
       taskName: "group"
 
-  - powershell: |
-      $jsonPath="$env:groupJsonPath"
-
-      $variablesJson = Get-Content $jsonPath | Out-String | ConvertFrom-Json
-
-      $names="["
-      $yamlNames=""
-      $envNames=""
-      $variablesJson.variables.PSObject.Properties | ForEach-Object {
-        $name=$_.Name
-        if ($name -like "tf_secret_*"){
-          Write-Host "Found: $name"
-          $names+="`"$name`","
-          $yamlNames+="      - $name `r`n"
-          $envNames+="      $name`:$($name)"
-        }
-      }
-      $names+="]"
-      "##vso[task.setvariable variable=names;isOutput=true]$names"
-      Write-Host "Names: $names"
-
-      $original="$(Build.SourcesDirectory)\pipeline\set-secrets.yaml"
-      $content=Get-Content -path $original -Raw
-      Write-Host "GET"
-      Write-Host $content
-      $replaceContent=$content -replace '     - REPLACEME',"$yamlNames"
-      Add-Content -Path $original -Value $envNames
-      Write-Host "REPLACE"
-      Write-Host $replaceContent
-      Set-Content -Path $original -Value $replaceContent
-      $contentv2=Get-Content -path $original -Raw
-      Write-Host "SET"
-      Write-Host $contentv2
-    displayName: 'get secret names'
-    name: "getSecret"
-    env:
-      groupJsonPath: $(group.secrets_path)
-  
-  - template: ../set-secrets.yaml
-  #- template: ../set-secrets.yaml
-  #  parameters: 
-  #    secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
-  #    #secretNames: $(getSecret.names)
-  #    secretNames2: ["Secrets0","Secrets1","Secrets2","Secrets3"]
-
-  - bash: |
-      echo "secretNames -- ${secretNames}"
-      echo "secretJson -- ${secretJson}"
-      
-      env -0 | while IFS='=' read -r -d '' n v; do
-        envName="$n"
-        envValue="$v"
-        echo "processing $envName : $envValue"
-      done
-    displayName: 'Print Variables'
-    name: tfVariablesPrint
-    env:
-      secretNames: "$(getSecret.names)"
-      secretJson: "$(setSecretVars)"
-      ${{ each sec in variables.setSecretVars }}:
-        "${{ sec.Key }}_sec" : "${{ convertToJson(sec) }}"
-
   - bash: |
       variableName="${{ parameters.variableName }}"
       secureFileJson=$(printenv secure_file_json)
@@ -123,5 +61,5 @@ steps:
     displayName: 'Set Shared Services TF Variables'
     name: tfVariables
     env:
-      ${{ each sec in variables.names }}:
-        "${{ sec }}" : "$(${{ sec }})"
+      ${{ each sec in parameters.libarySecrets }}:
+        "${{ sec.secName }}" : "$(${{ sec.secValue }})"
