@@ -18,8 +18,8 @@ ping_tests = [
 To change action group email, modify `var.support_email` in `/environments/shared.tfvars`
 
 ### Changing password on pact-broker database:
-If you need to change pact-broker database password:
-- navigate to Azure Database for PostgreSQL server `pip-pact-broker-*env*` and click "Reset password"
-- update the secret `pact-db-password` in Key Vault `pip-sharedinfra-kv-*env*`
+If you need to update the password for the pact-broker database, then you will need to run the Shared Services pipeline and then the Shared Infrastructure pipeline.
 
-IMPORTANT! - if you don't update the keyvault secret, AKS cluster won't be able to read it and will fail to start Pact on the pod.
+### Add Key Vault Secrets from Azure DevOps Library
+If you would like to add a new Variable from the Azure DevOps Library to the Shared Key Vault, then you will need to add it to the YAML list in this file.
+> pipeline\steps\tf-SharedServices-variables.yaml:19
