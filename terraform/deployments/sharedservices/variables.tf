@@ -23,3 +23,14 @@ variable "active_directory_group" {
   description = "Active Directory Group Name"
   default     = "DTS SDS Developers"
 }
+
+## Secrets
+variable "secrets_arr" {
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  description = "Key Vault Secrets from AzDO Library"
+  #sensitive   = true
+  default = []
+}
