@@ -49,9 +49,16 @@ steps:
       Write-Host "Names: $names"
 
       $original="$(Build.SourcesDirectory)\pipeline\set-secrets.yaml"
-      #$newPath="$(Build.SourcesDirectory)\pipeline\temp\set-secrets-$(Build.BuildNumber).yaml"
-      #Copy-Item $original -Destination $newPath
-      ((Get-Content -path $original -Raw) -replace '{{REPLACEME}}',"$names") | Set-Content -Path $original
+      $content=Get-Content -path $original -Raw
+      Write-Host "GET"
+      Write-Host $content
+      $replaceContent=$content -replace 'REPLACEME',"$names"
+      Write-Host "REPLACE"
+      Write-Host $content
+      $replaceContent Set-Content -Path $original
+      $contentv2=Get-Content -path $original -Raw
+      Write-Host "SET"
+      Write-Host $contentv2
     displayName: 'get secret names'
     name: "getSecret"
     env:
