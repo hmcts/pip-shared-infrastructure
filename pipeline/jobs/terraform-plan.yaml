@@ -41,7 +41,7 @@ jobs:
   steps:
     - template: templates\common\get-variable-group.yml@azTemplates
       parameters:
-        subscriptionName: ${{ parameters.subscriptionName }}
+        subscriptionName: ${{ parameters.subscription }}
         variableGroupName: "PIP-APIM-BUILD-${{ upper(parameters.environment) }}"
         variableName: "secrets"
         taskName: "group"
@@ -100,7 +100,7 @@ jobs:
       product: ${{ parameters.product }}
       outputLocation: '$(Build.SourcesDirectory)/plans/${{ parameters.outputName }}.tfplan'
       subscriptionName: ${{ parameters.subscription }}
-      
+
   - template: ../set-secrets.yaml
     parameters: 
       #secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
