@@ -102,7 +102,7 @@ jobs:
   - template: ../set-secrets.yaml
     parameters: 
       #secretNames: ["tf_secret_test1","tf_secret_gov_uk_notify_api_testing_key"]
-      secretNames: ${{ variables.secretVariableName }}
+      secretNames: $(secretVariableName)
 
   - template: ../steps/tf-plan.yaml
     parameters:
