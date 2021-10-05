@@ -19,8 +19,8 @@ parameters:
   - name: libarySecrets
     type: object
     default:
-      - secName: "tf_secret_gov_uk_notify_api_testing_key"
-        secValue: "$(tf_secret_gov_uk_notify_api_testing_key)"
+      - secName: "tf_secret_gov-uk-notify-api-testing-key"
+        secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
 
 steps:
   - template: templates\common\get-variable-group.yml@azTemplates
