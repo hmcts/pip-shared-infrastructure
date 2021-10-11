@@ -34,3 +34,13 @@ variable "secrets_arr" {
   #sensitive   = true
   default = []
 }
+
+## OTP Subscription
+variable "opt_tenant_id" {
+  type        = string
+  description = "PIP One Time Password Tenant ID"
+}
+variable "otp_app_names" {
+  type        = list(string)
+  description = "List of Applications in OTP"
+}
