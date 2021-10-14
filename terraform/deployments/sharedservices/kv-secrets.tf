@@ -106,6 +106,7 @@ resource "azuread_application_password" "otp_app_pwd" {
   count                 = length(data.azuread_application.otp_apps)
   provider              = azuread.otp_sub
   application_object_id = data.azuread_application.otp_apps[count.index].object_id
+  display_name          = "${data.azuread_application.otp_apps[count.index].display_name}-pwd"
 }
 
 module "keyvault_otp_id_secrets" {
@@ -125,7 +126,7 @@ module "keyvault_otp_id_secrets" {
   ]
   c_secrets = [
     for otp_app_pwd in azuread_application_password.otp_app_pwd : {
-      name  = lower("otp-app-${otp_app_pwd.display_name}-pwd")
+      name  = lower("otp-app-${otp_app_pwd.display_name}")
       value = otp_app_pwd.value
       tags = {
         "source" : "OTP Tenant"
