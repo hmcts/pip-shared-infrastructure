@@ -20,6 +20,8 @@ provider "azurerm" {
 provider "random" {}
 provider "azuread" {}
 provider "azuread" {
-  alias     = "otp_sub"
-  tenant_id = var.opt_tenant_id
+  alias         = "otp_sub"
+  client_id     = var.otp_client_id
+  client_secret = var.otp_client_secret
+  tenant_id     = var.opt_tenant_id
 }
