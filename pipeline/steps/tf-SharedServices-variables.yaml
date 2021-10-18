@@ -40,6 +40,9 @@ steps:
       variables="${variables} -out=\"${{ parameters.outputLocation }}\""
       variables="${variables} -var \"builtFrom=${{ parameters.builtFrom }} \""
       variables="${variables} -var \"product=${{ parameters.product }}\""
+      variables="${variables} -var \"opt_tenant_id=$(opt_tenant_id)\""
+      variables="${variables} -var \"otp_client_id=$(otp_client_id)\""
+      variables="${variables} -var \"otp_client_secret=$(otp_client_secret)\""
 
       secretArr=$(env -0 | while IFS='=' read -r -d '' n v; do
         envName="$n"

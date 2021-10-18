@@ -20,7 +20,6 @@ resource "random_password" "pact_db_password" {
   min_special = 2
 }
 
-
 module "keyvault_secrets" {
   source = "../../modules/key-vault/secret"
 
@@ -28,8 +27,22 @@ module "keyvault_secrets" {
   tags         = local.common_tags
   secrets = [
     {
+      name  = "otp-tenant-id"
+      value = var.opt_tenant_id
+      tags = {
+        "source" : "OTP Tenant"
+      }
+      content_type = ""
+    },
+    {
       name         = "${local.shared_storage_name}-storageaccount-key"
       value        = module.shared_storage.primary_access_key
+      tags         = {}
+      content_type = ""
+    },
+    {
+      name         = "${local.shared_storage_name}-storageaccount-connection-string"
+      value        = module.shared_storage.primary_connection_string
       tags         = {}
       content_type = ""
     },
@@ -40,7 +53,7 @@ module "keyvault_secrets" {
       content_type = ""
     },
     {
-      name         = "dtu-storage-account-key"
+      name         = "dtu-storageaccount-key"
       value        = module.pipdtu.primary_access_key
       tags         = {}
       content_type = ""
@@ -73,7 +86,7 @@ module "keyvault_ado_secrets" {
   key_vault_id = module.kv.key_vault_id
   tags         = local.common_tags
   secrets = [
-    for secret in var.secrets_arr: {
+    for secret in var.secrets_arr : {
       name  = secret.name
       value = secret.value
       tags = {
@@ -82,5 +95,43 @@ module "keyvault_ado_secrets" {
       content_type = ""
     }
   ]
-  
+}
+
+data "azuread_application" "otp_apps" {
+  count        = length(var.otp_app_names)
+  provider     = azuread.otp_sub
+  display_name = var.otp_app_names[count.index]
+}
+resource "azuread_application_password" "otp_app_pwd" {
+  count                 = length(data.azuread_application.otp_apps)
+  provider              = azuread.otp_sub
+  application_object_id = data.azuread_application.otp_apps[count.index].object_id
+  display_name          = "${data.azuread_application.otp_apps[count.index].display_name}-pwd"
+}
+
+module "keyvault_otp_id_secrets" {
+  source = "../../modules/key-vault/secret"
+
+  key_vault_id = module.kv.key_vault_id
+  tags         = local.common_tags
+  secrets = [
+    for otp_app in data.azuread_application.otp_apps : {
+      name  = lower("otp-app-${otp_app.display_name}-id")
+      value = otp_app.object_id
+      tags = {
+        "source" : "OTP Tenant"
+      }
+      content_type = ""
+    }
+  ]
+  c_secrets = [
+    for otp_app_pwd in azuread_application_password.otp_app_pwd : {
+      name  = lower("otp-app-${otp_app_pwd.display_name}")
+      value = otp_app_pwd.value
+      tags = {
+        "source" : "OTP Tenant"
+      }
+      content_type = ""
+    }
+  ]
 }
