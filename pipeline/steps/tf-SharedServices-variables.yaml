@@ -57,7 +57,7 @@ steps:
           #echo "found $secretArr"
         fi
       done)
-      secretArr="[${secretArr}]"
+      secretArr="[${secretArr//[$'\t\r\n']}]"
       variables="${variables} -var \"secrets_arr=${secretArr}\""
 
       echo "Variables set as: "
