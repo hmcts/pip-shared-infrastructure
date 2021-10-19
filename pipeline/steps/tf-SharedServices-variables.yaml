@@ -21,6 +21,8 @@ parameters:
     default:
       - secName: "tf_secret_gov-uk-notify-api-testing-key"
         secValue: "$(tf_secret_gov-uk-notify-api-testing-key)"
+      - secName: "tf_secret_gov-uk-notify-api-key"
+        secValue: "$(tf_secret_gov-uk-notify-api-key)"
 
 steps:
   - template: templates\common\get-variable-group.yml@azTemplates
@@ -55,7 +57,7 @@ steps:
           #echo "found $secretArr"
         fi
       done)
-      secretArr="[${secretArr}]"
+      secretArr="[${secretArr//[$'\t\r\n']}]"
       variables="${variables} -var \"secrets_arr=${secretArr}\""
 
       echo "Variables set as: "
