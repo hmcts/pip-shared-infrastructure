@@ -19,6 +19,14 @@ resource "random_password" "pact_db_password" {
   min_numeric = 2
   min_special = 2
 }
+resource "random_password" "session_string" {
+  length      = 20
+  min_upper   = 2
+  min_lower   = 2
+  min_numeric = 2
+  min_special = 2
+  special     = true
+}
 
 module "keyvault_secrets" {
   source = "../../modules/key-vault/secret"
@@ -73,6 +81,14 @@ module "keyvault_secrets" {
       tags = {
         "file-encoding" = "utf-8"
         "purpose"       = "pactbrokerdb"
+      }
+      content_type = ""
+    },
+    {
+      name  = "session-key"
+      value = random_password.session_string.result
+      tags = {
+        "purpose" = "opt-session"
       }
       content_type = ""
     }
