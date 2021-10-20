@@ -117,7 +117,7 @@ module "keyvault_otp_id_secrets" {
   secrets = [
     for otp_app in data.azuread_application.otp_apps : {
       name  = lower("otp-app-${otp_app.display_name}-id")
-      value = otp_app.object_id
+      value = otp_app.application_id
       tags = {
         "source" : "OTP Tenant"
       }
