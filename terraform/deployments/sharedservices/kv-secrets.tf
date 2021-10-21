@@ -114,7 +114,7 @@ module "keyvault_ado_secrets" {
 }
 
 module "otp_apps" {
-  for_each = var.otp_app_names
+  for_each     = { for otp_app_name in var.otp_app_names : otp_app_name => otp_app_name }
   source = "../../modules/ad-app/secrets"
   providers = {
     azuread = azuread.otp_sub
