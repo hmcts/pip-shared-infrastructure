@@ -1,8 +1,4 @@
-variable "object_id" {
+variable "app_name" {
   type        = string
-  description = "App object id"
-}
-variable "display_name" {
-  type        = string
-  description = "App Secret Display Name"
+  description = "App Display Name"
 }
