@@ -31,4 +31,4 @@ apim_rules = {
   AuthenticateToAzureActiveDirectory433Outbound        = ["Outbound", "Allow", "TCP", "*", "443", "VirtualNetwork", "AzureActiveDirectory"]
 }
 
-otp_app_names = ["PIP-FRONTEND", "PIP-ACCOUNT-MANAGEMENT"]
+otp_app_names = ["PIP-ACCOUNT-MANAGEMENT"]
