@@ -113,19 +113,13 @@ module "keyvault_ado_secrets" {
   ]
 }
 
-module "otp_account_management" {
+module "otp_app" {
+  for_each = var.otp_app_names
   source = "../../modules/ad-app/secrets"
   providers = {
     azuread = azuread.otp_sub
   }
-  app_name = "PIP-ACCOUNT-MANAGEMENT"
-}
-module "otp_frontend" {
-  source = "../../modules/ad-app/secrets"
-  providers = {
-    azuread = azuread.otp_sub
-  }
-  app_name = "PIP-FRONTEND"
+  app_name = each.value
 }
 locals {
   otp_apps = [module.otp_account_management, module.otp_frontend]
