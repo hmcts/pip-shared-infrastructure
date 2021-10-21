@@ -113,16 +113,13 @@ module "keyvault_ado_secrets" {
   ]
 }
 
-module "otp_app" {
+module "otp_apps" {
   for_each = var.otp_app_names
   source = "../../modules/ad-app/secrets"
   providers = {
     azuread = azuread.otp_sub
   }
   app_name = each.value
-}
-locals {
-  otp_apps = [module.otp_account_management, module.otp_frontend]
 }
 
 module "keyvault_otp_id_secrets" {
@@ -131,7 +128,7 @@ module "keyvault_otp_id_secrets" {
   key_vault_id = module.kv.key_vault_id
   tags         = local.common_tags
   secrets = [
-    for otp_app in local.otp_apps : {
+    for otp_app in module.otp_apps : {
       name  = lower("otp-app-${otp_app.app_display_name}-id")
       value = otp_app.app_application_id
       tags = {
