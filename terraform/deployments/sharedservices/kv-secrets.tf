@@ -118,16 +118,19 @@ data "azuread_application" "otp_apps" {
   provider     = azuread.otp_sub
   display_name = var.otp_app_names[count.index]
 }
-module "otp_app_pwd" {
-  count  = length(data.azuread_application.otp_apps)
-  source = "../../modules/ad-app/secrets"
-  providers = {
-    azuread = azuread.otp_sub
-  }
-  object_id    = data.azuread_application.otp_apps[count.index].object_id
-  display_name = "${data.azuread_application.otp_apps[count.index].display_name}-pwd"
-
-
+resource "random_password" "pwd_string" {
+  length      = 4
+  min_upper   = 2
+  min_lower   = 2
+  min_numeric = 2
+  min_special = 2
+  special     = false
+}
+resource "azuread_application_password" "otp_app_pwd" {
+  count                 = length(data.azuread_application.otp_apps)
+  provider              = azuread.otp_sub
+  application_object_id = data.azuread_application.otp_apps[count.index].object_id
+  display_name          = "${data.azuread_application.otp_apps[count.index].display_name}-pwd-${random_password.pwd_string.result}-${var.environment}"
 }
 
 module "keyvault_otp_id_secrets" {
@@ -146,7 +149,7 @@ module "keyvault_otp_id_secrets" {
     }
   ]
   c_secrets = [
-    for otp_app_pwd in module.otp_app_pwd : {
+    for otp_app_pwd in azuread_application_password.otp_app_pwd : {
       name  = lower("otp-app-${otp_app_pwd.display_name}")
       value = otp_app_pwd.value
       tags = {
