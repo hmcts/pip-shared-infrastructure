@@ -118,19 +118,12 @@ data "azuread_application" "otp_apps" {
   provider     = azuread.otp_sub
   display_name = var.otp_app_names[count.index]
 }
-resource "random_password" "pwd_string" {
-  length      = 4
-  min_upper   = 2
-  min_lower   = 2
-  min_numeric = 2
-  min_special = 2
-  special     = false
-}
+
 resource "azuread_application_password" "otp_app_pwd" {
   count                 = length(data.azuread_application.otp_apps)
   provider              = azuread.otp_sub
   application_object_id = data.azuread_application.otp_apps[count.index].object_id
-  display_name          = "${data.azuread_application.otp_apps[count.index].display_name}-pwd-${random_password.pwd_string.result}-${var.environment}"
+  display_name          = "${data.azuread_application.otp_apps[count.index].display_name}-pwd"
 }
 
 module "keyvault_otp_id_secrets" {
