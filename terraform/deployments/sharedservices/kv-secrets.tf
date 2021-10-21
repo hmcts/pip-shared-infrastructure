@@ -113,17 +113,22 @@ module "keyvault_ado_secrets" {
   ]
 }
 
-data "azuread_application" "otp_apps" {
-  count        = length(var.otp_app_names)
-  provider     = azuread.otp_sub
-  display_name = var.otp_app_names[count.index]
+module "otp_account_management" {
+  source = "../../modules/ad-app/secrets"
+  providers = {
+    azuread = azuread.otp_sub
+  }
+  app_name = "PIP-ACCOUNT-MANAGEMENT"
 }
-
-resource "azuread_application_password" "otp_app_pwd" {
-  count                 = length(data.azuread_application.otp_apps)
-  provider              = azuread.otp_sub
-  application_object_id = data.azuread_application.otp_apps[count.index].object_id
-  display_name          = "${data.azuread_application.otp_apps[count.index].display_name}-pwd"
+module "otp_frontend" {
+  source = "../../modules/ad-app/secrets"
+  providers = {
+    azuread = azuread.otp_sub
+  }
+  app_name = "PIP-FRONTEND"
+}
+locals {
+  otp_apps = [module.otp_account_management, module.otp_frontend]
 }
 
 module "keyvault_otp_id_secrets" {
@@ -132,19 +137,25 @@ module "keyvault_otp_id_secrets" {
   key_vault_id = module.kv.key_vault_id
   tags         = local.common_tags
   secrets = [
-    for otp_app in data.azuread_application.otp_apps : {
-      name  = lower("otp-app-${otp_app.display_name}-id")
-      value = otp_app.application_id
+    for otp_app in local.otp_apps : {
+      name  = lower("otp-app-${otp_app.app_display_name}-id")
+      value = otp_app.app_application_id
       tags = {
         "source" : "OTP Tenant"
       }
       content_type = ""
     }
   ]
-  c_secrets = [
-    for otp_app_pwd in azuread_application_password.otp_app_pwd : {
-      name  = lower("otp-app-${otp_app_pwd.display_name}")
-      value = otp_app_pwd.value
+}
+module "keyvault_otp_id_pwds" {
+  source = "../../modules/key-vault/secret"
+
+  key_vault_id = module.kv.key_vault_id
+  tags         = local.common_tags
+  secrets = [
+    for otp_app_pwd in local.otp_apps : {
+      name  = lower("otp-app-${otp_app_pwd.pwd_display_name}")
+      value = otp_app_pwd.pwd_value
       tags = {
         "source" : "OTP Tenant"
       }
