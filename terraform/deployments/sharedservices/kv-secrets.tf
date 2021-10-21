@@ -119,10 +119,15 @@ data "azuread_application" "otp_apps" {
   display_name = var.otp_app_names[count.index]
 }
 module "otp_app_pwd" {
-  count                 = length(data.azuread_application.otp_apps)
+  count  = length(data.azuread_application.otp_apps)
   source = "../../modules/ad-app/secrets"
-  object_id = data.azuread_application.otp_apps[count.index].object_id
-  display_name          = "${data.azuread_application.otp_apps[count.index].display_name}-pwd"
+  providers = {
+    azuread = azuread.otp_sub
+  }
+  object_id    = data.azuread_application.otp_apps[count.index].object_id
+  display_name = "${data.azuread_application.otp_apps[count.index].display_name}-pwd"
+
+
 }
 
 module "keyvault_otp_id_secrets" {
