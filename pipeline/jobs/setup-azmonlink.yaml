@@ -28,10 +28,13 @@ jobs:
   pool:
     vmImage: 'ubuntu-20.04'
   steps:
-  - task: AzurePowerShell@5
-    inputs:
-      azureSubscription: ${{ parameters.subscription }}
-      ScriptType: 'FilePath'
-      ScriptPath: '$(System.DefaultWorkingDirectory)/pipeline/scripts/azmonlink.ps1'
-      ScriptArguments: '-businessArea ${{ parameters.businessArea }} -builtFrom ${{ parameters.builtFrom }} -environment ${{ parameters.environment }} -larg $(la-rg) -lasubid $(log_analytics_subscription_id)'
-      azurePowerShellVersion: 'LatestVersion'
+    - template: templates\Azure\Monitor\link.yaml@azTemplates
+      parameters:
+        subscription: ${{ parameters.subscription }}
+        appName: "publish and information"
+        appPrefix: "pip"
+        businessArea: ${{ parameters.businessArea }}
+        builtFrom: ${{ parameters.builtFrom }}
+        environment: ${{ parameters.environment }} 
+        logAnalyticsResourceGroup: $(la-rg)
+        logAnalyticsSubscriptionId: $(log_analytics_subscription_id)
