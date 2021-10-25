@@ -9,4 +9,9 @@ jobs:
     vmImage: 'ubuntu-20.04'
   steps:
   - template: ../steps/tf-install.yaml
-  - template: ../steps/tf-test.yaml
+  - template: templates/tests/terraform/allTests.yaml@azTemplates
+    parameters:
+      terraformPath: $(System.DefaultWorkingDirectory)/terraform/deployments/sharedinfra
+  - template: templates/tests/terraform/allTests.yaml@azTemplates
+    parameters:
+      terraformPath: $(System.DefaultWorkingDirectory)/terraform/deployments/sharedservices
