@@ -41,11 +41,11 @@ stages:
     jobs:
       - template: pipeline/jobs/terraform-validate.yaml
         parameters:
-          displayName: 'Validate Shared Infra Terraform files'
+          serviceName: 'Shared_Infra'
           terraformPath: $(Build.SourcesDirectory)/terraform/deployments/sharedinfra
       - template: pipeline/jobs/terraform-validate.yaml
         parameters:
-          displayName: 'Validate Shared Services Terraform files'
+          serviceName: 'Shared_Services'
           terraformPath: $(Build.SourcesDirectory)/terraform/deployments/sharedservices
 
 ## NOTE: 

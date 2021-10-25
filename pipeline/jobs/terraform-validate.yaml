@@ -1,12 +1,12 @@
 parameters:
-  - name: displayName
+  - name: serviceName
     type: string
   - name: terraformPath
     type: string
 
 jobs:
-- job: TerraformValidate
-  displayName: '${{ parameters.displayName }}'
+- job: TerraformValidate${{ parameters.serviceName }}
+  displayName: 'Validate ${{ parameters.serviceName }}'
   pool:
     vmImage: 'ubuntu-20.04'
   steps:
