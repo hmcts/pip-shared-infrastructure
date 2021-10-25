@@ -21,9 +21,6 @@ parameters:
 
 jobs:
 - job: setupAzureMonitorLink
-  dependsOn:
-  - ${{ if parameters.dependsOn }}:
-    - ${{ parameters.dependsOn }}
   displayName: ${{ parameters.displayName }}
   pool:
     vmImage: 'ubuntu-20.04'
