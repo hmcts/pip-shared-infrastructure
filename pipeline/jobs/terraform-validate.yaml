@@ -1,6 +1,8 @@
 parameters:
   - name: displayName
     type: string
+  - name: terraformPath
+    type: string
 
 jobs:
 - job: TerraformValidate
@@ -11,7 +13,4 @@ jobs:
   - template: ../steps/tf-install.yaml
   - template: templates/tests/terraform/allTests.yaml@azTemplates
     parameters:
-      terraformPath: $(System.DefaultWorkingDirectory)/terraform/deployments/sharedinfra
-  - template: templates/tests/terraform/allTests.yaml@azTemplates
-    parameters:
-      terraformPath: $(System.DefaultWorkingDirectory)/terraform/deployments/sharedservices
+      terraformPath: ${{ parameters.terraformPath }}
