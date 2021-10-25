@@ -18,9 +18,22 @@ resource "azurerm_postgresql_server" "pip_pact" {
   ssl_minimal_tls_version_enforced = "TLS1_2"
   public_network_access_enabled    = false
 }
-resource "azurerm_postgresql_configuration" "pip_pact_config" {
-  name                = "log_checkpoints"
+
+locals {
+  settings_on  = ["log_checkpoints", "connection_throttling", "log_connections"]
+  settings_off = []
+}
+resource "azurerm_postgresql_configuration" "pip_pact_config_on" {
+  for_each            = { for settings_on in local.settings_on : settings_on => settings_on }
+  name                = each.value
   resource_group_name = var.resource_group
   server_name         = azurerm_postgresql_server.pip_pact.name
   value               = "on"
+}
+resource "azurerm_postgresql_configuration" "pip_pact_config_off" {
+  for_each            = { for settings_off in local.settings_off : settings_off => settings_off }
+  name                = each.value
+  resource_group_name = var.resource_group
+  server_name         = azurerm_postgresql_server.pip_pact.name
+  value               = "off"
 }
