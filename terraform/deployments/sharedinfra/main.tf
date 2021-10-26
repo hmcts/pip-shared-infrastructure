@@ -75,16 +75,12 @@ module "sa" {
   team_name    = local.team_name
   team_contact = local.team_contact
 }
-
-resource "azurerm_storage_table" "distributionlist" {
-  name                 = "distributionlist"
-  storage_account_name = local.storage_account_name
-  depends_on = [
-    module.sa
-  ]
+locals {
+  tables = ["distributionlist", "courts", "artefact"]
 }
-resource "azurerm_storage_table" "sa_courts" {
-  name                 = "courts"
+resource "azurerm_storage_table" "sa_tables" {
+  for_each             = { for table in local.tables : table => table }
+  name                 = each.value
   storage_account_name = local.storage_account_name
   depends_on = [
     module.sa
