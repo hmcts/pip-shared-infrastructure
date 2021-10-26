@@ -1,3 +1,4 @@
+#tfsec:ignore:azure-storage-default-action-deny
 module "network_watcher_sa" {
   source = "git::https://github.com/hmcts/cnp-module-storage-account.git?ref=master"
 
@@ -30,7 +31,7 @@ resource "azurerm_network_watcher_flow_log" "network_watcher_flow" {
 
   retention_policy {
     enabled = true
-    days    = var.environment == "sbox" || var.environment == "dev" || var.environment == "test" ? 30 : 60
+    days    = var.environment == "sbox" || var.environment == "dev" || var.environment == "test" ? 30 : 90
   }
 
   traffic_analytics {
