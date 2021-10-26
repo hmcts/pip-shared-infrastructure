@@ -53,6 +53,7 @@ module "app-insights" {
   tags           = local.common_tags
 }
 
+#tfsec:ignore:azure-storage-default-action-deny
 module "sa" {
   source = "git::https://github.com/hmcts/cnp-module-storage-account.git?ref=master"
 
@@ -83,6 +84,7 @@ resource "azurerm_storage_table" "distributionlist" {
   ]
 }
 
+#tfsec:ignore:azure-storage-default-action-deny
 module "dtu_sa" {
   source = "git::https://github.com/hmcts/cnp-module-storage-account.git?ref=master"
 
