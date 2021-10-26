@@ -83,6 +83,13 @@ resource "azurerm_storage_table" "distributionlist" {
     module.sa
   ]
 }
+resource "azurerm_storage_table" "sa_courts" {
+  name                 = "courts"
+  storage_account_name = local.storage_account_name
+  depends_on = [
+    module.sa
+  ]
+}
 
 #tfsec:ignore:azure-storage-default-action-deny
 module "dtu_sa" {
