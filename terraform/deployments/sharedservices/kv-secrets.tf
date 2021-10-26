@@ -144,9 +144,9 @@ module "keyvault_otp_id_pwds" {
   key_vault_id = module.kv.key_vault_id
   tags         = local.common_tags
   secrets = [
-    for otp_app_pw in module.otp_apps : {
-      name  = lower("otp-app-${otp_app_pw.pw_display_name}")
-      value = otp_app_pw.pw_value
+    for otp_app_pwd in module.otp_apps : {
+      name  = lower("otp-app-${otp_app_pwd.pwd_display_name}")
+      value = otp_app_pwd.pwd_value
       tags = {
         "source" : "OTP Tenant"
       }
