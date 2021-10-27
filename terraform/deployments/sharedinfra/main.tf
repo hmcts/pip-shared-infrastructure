@@ -32,16 +32,6 @@ module "network" {
   log_analytics_subscription_id = var.la_sub_id
 }
 
-module "postgresql" {
-  source         = "../../modules/postgresql"
-  environment    = var.environment
-  resource_group = local.resource_group_name
-  location       = var.location
-  product        = local.product
-  tags           = local.common_tags
-  subnet_id      = module.network.apim_subnet_id
-}
-
 module "app-insights" {
   source         = "../../modules/app-insights"
   environment    = var.environment
