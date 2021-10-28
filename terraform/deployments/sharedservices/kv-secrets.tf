@@ -12,13 +12,6 @@ module "pipdtu" {
   resource_group_name  = local.shared_infra_resource_group_name
 }
 
-resource "random_password" "pact_db_password" {
-  length      = 20
-  min_upper   = 2
-  min_lower   = 2
-  min_numeric = 2
-  min_special = 2
-}
 resource "random_password" "session_string" {
   length      = 20
   min_upper   = 2
@@ -64,24 +57,6 @@ module "keyvault_secrets" {
       name         = "dtu-storageaccount-key"
       value        = module.pipdtu.primary_access_key
       tags         = {}
-      content_type = ""
-    },
-    {
-      name  = "pact-db-password"
-      value = random_password.pact_db_password.result
-      tags = {
-        "file-encoding" = "utf-8"
-        "purpose"       = "pactbrokerdb"
-      }
-      content_type = ""
-    },
-    {
-      name  = "pact-db-user"
-      value = "pactadmin"
-      tags = {
-        "file-encoding" = "utf-8"
-        "purpose"       = "pactbrokerdb"
-      }
       content_type = ""
     },
     {
