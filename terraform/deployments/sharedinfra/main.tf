@@ -7,6 +7,7 @@ locals {
   team_name                = "PIP DevOps"
   team_contact             = "#vh-devops"
 }
+data "azurerm_client_config" "current" {}
 
 module "ctags" {
   source      = "git::https://github.com/hmcts/terraform-module-common-tags.git?ref=master"
@@ -98,4 +99,76 @@ module "dtu_sa" {
 
   team_name    = local.team_name
   team_contact = local.team_contact
+}
+
+locals {
+  postgresql_user          = "pipdbadmin"
+  postgresql_secret_prefix = "postgre"
+}
+module "databases" {
+  for_each        = { for database in var.databases : database => database }
+  source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
+  product         = local.product
+  component       = "${local.product}-shared-infra"
+  location        = var.location
+  env             = var.environment
+  postgresql_user = local.postgresql_user
+  database_name   = each.value
+  common_tags     = local.common_tags
+  subscription    = data.azurerm_client_config.current.subscription_id
+  business_area   = "SDS"
+}
+
+data "azurerm_key_vault" "ss_kv" {
+  name                = "${local.product}-shared-kv-${var.environment}"
+  resource_group_name = "${local.product}-sharedservices-${var.environment}-rg"
+}
+module "keyvault_postgre_secrets" {
+  for_each = { for database in module.databases : database.name => database }
+  source   = "../../modules/key-vault/secret"
+
+  key_vault_id = data.azurerm_key_vault.ss_kv.id
+  tags         = local.common_tags
+  secrets = [
+    {
+      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_host"
+      value = each.value.host_name
+      tags = {
+        "source" : "PostgreSQL"
+      }
+      content_type = ""
+    },
+    {
+      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_port"
+      value = each.value.postgresql_listen_port
+      tags = {
+        "source" : "PostgreSQL"
+      }
+      content_type = ""
+    },
+    {
+      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_user"
+      value = each.value.user_name
+      tags = {
+        "source" : "PostgreSQL"
+      }
+      content_type = ""
+    },
+    {
+      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_pwd"
+      value = each.value.postgresql_password
+      tags = {
+        "source" : "PostgreSQL"
+      }
+      content_type = ""
+    },
+    {
+      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_name"
+      value = each.value.postgresql_database
+      tags = {
+        "source" : "PostgreSQL"
+      }
+      content_type = ""
+    }
+  ]
 }
