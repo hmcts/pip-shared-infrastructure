@@ -6,8 +6,10 @@ locals {
   dtu_storage_account_name = "pipdtu${var.environment}"
   team_name                = "PIP DevOps"
   team_contact             = "#vh-devops"
+  env_long_name = var.environment == "sbox" ? "sandbox" : var.environment == "stg" ? "staging" : var.environment
+  postgresql_user          = "pipdbadmin"
+  postgresql_prefix = "postgre"
 }
-data "azurerm_client_config" "current" {}
 
 module "ctags" {
   source      = "git::https://github.com/hmcts/terraform-module-common-tags.git?ref=master"
@@ -101,10 +103,6 @@ module "dtu_sa" {
   team_contact = local.team_contact
 }
 
-locals {
-  postgresql_user          = "pipdbadmin"
-  postgresql_prefix = "postgre"
-}
 module "databases" {
   for_each        = { for database in var.databases : database => database }
   source          = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=master"
@@ -115,7 +113,7 @@ module "databases" {
   postgresql_user = local.postgresql_user
   database_name   = each.value
   common_tags     = local.common_tags
-  subscription    = data.azurerm_client_config.current.subscription_id
+  subscription    = local.env_long_name
   business_area   = "SDS"
 }
 
