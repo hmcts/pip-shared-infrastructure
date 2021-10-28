@@ -62,7 +62,7 @@ module "sa" {
   storage_account_name = local.storage_account_name
   common_tags          = local.common_tags
 
-  default_action = "Allow"
+  default_action = "Deny"
 
   resource_group_name = local.resource_group_name
   location            = var.location
