@@ -55,7 +55,7 @@ module "app-insights" {
 
 #tfsec:ignore:azure-storage-default-action-deny
 module "sa" {
-  source = "git::https://github.com/hmcts/cnp-module-storage-account.git?ref=master"
+  source = "git::https://github.com/hmcts/cnp-module-storage-account.git?ref=PUB-RR-1"
 
   env = var.environment
 
