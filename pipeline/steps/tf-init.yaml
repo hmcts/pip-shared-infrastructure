@@ -35,4 +35,4 @@ steps:
     backendAzureRmContainerName: ${{ parameters.containerName }}
     backendAzureRmKey: pipshared/${{ parameters.environment }}.tfstate
 
-  - task: UsePythonVersion@0
+- task: UsePythonVersion@0
