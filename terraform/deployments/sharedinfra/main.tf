@@ -115,6 +115,9 @@ module "databases" {
   common_tags     = local.common_tags
   subscription    = local.env_long_name
   business_area   = "SDS"
+  
+  key_vault_rg       = "genesis-rg"
+  key_vault_name     = "dtssharedservices${var.environment}kv"
 }
 
 data "azurerm_key_vault" "ss_kv" {
