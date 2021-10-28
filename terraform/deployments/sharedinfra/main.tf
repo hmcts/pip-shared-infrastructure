@@ -109,7 +109,7 @@ module "databases" {
   product         = local.product
   component       = "${local.product}-shared-infra"
   location        = var.location
-  env             = var.environment
+  env             = local.env_long_name
   postgresql_user = local.postgresql_user
   database_name   = each.value
   common_tags     = local.common_tags
@@ -132,7 +132,7 @@ module "keyvault_postgre_secrets" {
   tags         = local.common_tags
   secrets = [
     {
-      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_host"
+      name  = "${local.postgresql_prefix}-${each.value.postgresql_database}-host"
       value = each.value.host_name
       tags = {
         "source" : "PostgreSQL"
@@ -140,7 +140,7 @@ module "keyvault_postgre_secrets" {
       content_type = ""
     },
     {
-      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_port"
+      name  = "${local.postgresql_prefix}-${each.value.postgresql_database}-port"
       value = each.value.postgresql_listen_port
       tags = {
         "source" : "PostgreSQL"
@@ -148,7 +148,7 @@ module "keyvault_postgre_secrets" {
       content_type = ""
     },
     {
-      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_user"
+      name  = "${local.postgresql_prefix}-${each.value.postgresql_database}-user"
       value = each.value.user_name
       tags = {
         "source" : "PostgreSQL"
@@ -156,7 +156,7 @@ module "keyvault_postgre_secrets" {
       content_type = ""
     },
     {
-      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_pwd"
+      name  = "${local.postgresql_prefix}-${each.value.postgresql_database}-pwd"
       value = each.value.postgresql_password
       tags = {
         "source" : "PostgreSQL"
@@ -164,7 +164,7 @@ module "keyvault_postgre_secrets" {
       content_type = ""
     },
     {
-      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_name"
+      name  = "${local.postgresql_prefix}-${each.value.postgresql_database}-name"
       value = each.value.postgresql_database
       tags = {
         "source" : "PostgreSQL"

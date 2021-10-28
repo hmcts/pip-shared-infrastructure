@@ -35,8 +35,4 @@ steps:
     backendAzureRmContainerName: ${{ parameters.containerName }}
     backendAzureRmKey: pipshared/${{ parameters.environment }}.tfstate
 
-- task: TerraformCLI@0
-  displayName: Terraform validate
-  inputs:
-    command: validate
-    workingDirectory: ${{ parameters.workingDirectory }}
+  - task: UsePythonVersion@0
