@@ -54,15 +54,9 @@ stages:
         - name: sbox
           subscription: DTS-SHAREDSERVICES-SBOX
           dependency: 'CIBuild'
-        - name: dev
-          subscription: DTS-SHAREDSERVICES-DEV
-          dependency: 'sbox'
-        - name: test
-          subscription: DTS-SHAREDSERVICES-TEST
-          dependency: 'dev'
         - name: stg
           subscription: DTS-SHAREDSERVICES-STG
-          dependency: 'test'
+          dependency: 'sbox'
         - name: prod
           subscription: DTS-SHAREDSERVICES-PROD
           dependency: 'stg'
@@ -86,15 +80,9 @@ stages:
         - name: sbox
           subscription: DTS-SHAREDSERVICES-SBOX
           dependency: 'CIBuild'
-        - name: dev
-          subscription: DTS-SHAREDSERVICES-DEV
-          dependency: 'sbox'
-        - name: test
-          subscription: DTS-SHAREDSERVICES-TEST
-          dependency: 'dev'
         - name: stg
           subscription: DTS-SHAREDSERVICES-STG
-          dependency: 'test'
+          dependency: 'sbox'
         - name: prod
           subscription: DTS-SHAREDSERVICES-PROD
           dependency: 'stg'
@@ -118,15 +106,9 @@ stages:
         - name: sbox
           subscription: DTS-SHAREDSERVICES-SBOX
           dependency: 'CIBuild'
-        - name: dev
-          subscription: DTS-SHAREDSERVICES-DEV
-          dependency: 'sbox'
-        - name: test
-          subscription: DTS-SHAREDSERVICES-TEST
-          dependency: 'dev'
         - name: stg
           subscription: DTS-SHAREDSERVICES-STG
-          dependency: 'test'
+          dependency: 'sbox'
         - name: prod
           subscription: DTS-SHAREDSERVICES-PROD
           dependency: 'stg'
