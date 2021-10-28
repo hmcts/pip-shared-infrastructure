@@ -103,7 +103,7 @@ module "dtu_sa" {
 
 locals {
   postgresql_user          = "pipdbadmin"
-  postgresql_secret_prefix = "postgre"
+  postgresql_prefix = "postgre"
 }
 module "databases" {
   for_each        = { for database in var.databases : database => database }
@@ -131,7 +131,7 @@ module "keyvault_postgre_secrets" {
   tags         = local.common_tags
   secrets = [
     {
-      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_host"
+      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_host"
       value = each.value.host_name
       tags = {
         "source" : "PostgreSQL"
@@ -139,7 +139,7 @@ module "keyvault_postgre_secrets" {
       content_type = ""
     },
     {
-      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_port"
+      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_port"
       value = each.value.postgresql_listen_port
       tags = {
         "source" : "PostgreSQL"
@@ -147,7 +147,7 @@ module "keyvault_postgre_secrets" {
       content_type = ""
     },
     {
-      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_user"
+      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_user"
       value = each.value.user_name
       tags = {
         "source" : "PostgreSQL"
@@ -155,7 +155,7 @@ module "keyvault_postgre_secrets" {
       content_type = ""
     },
     {
-      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_pwd"
+      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_pwd"
       value = each.value.postgresql_password
       tags = {
         "source" : "PostgreSQL"
@@ -163,7 +163,7 @@ module "keyvault_postgre_secrets" {
       content_type = ""
     },
     {
-      name  = "${local.postgresql_secret_prefix}_${each.value.postgresql_database}_name"
+      name  = "${local.postgresql_prefix}_${each.value.postgresql_database}_name"
       value = each.value.postgresql_database
       tags = {
         "source" : "PostgreSQL"
