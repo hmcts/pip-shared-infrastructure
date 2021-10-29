@@ -107,7 +107,7 @@ module "databases" {
   for_each        = { for database in var.databases : database => database }
   source          = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=master"
   product         = local.product
-  component       = "${local.product}-shared-infra"
+  component       = "shared-infra"
   location        = var.location
   env             = local.env_long_name
   postgresql_user = local.postgresql_user
