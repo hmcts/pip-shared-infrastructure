@@ -79,22 +79,7 @@ jobs:
       outputLocation: '$(Build.SourcesDirectory)/plans/${{ parameters.outputName }}.tfplan'
       subscriptionName: ${{ parameters.subscription }}
 
-  - ${{ if eq(parameters.serviceName,'SharedInfra') }}:
-    - template: templates\Azure\Postgres\firewall.yaml@azTemplates
-      parameters:
-        subscription: ${{ parameters.subscription }}
-        ${{ if eq(parameters.environment,'sbox') }}:
-          postgresName: "${{ parameters.product }}-shared-infra-sandbox"
-          resourceGroupName: "${{ parameters.product }}-shared-infra-data-sandbox"
-        ${{ elseif eq(parameters.environment,'stg') }}:
-          postgresName: "${{ parameters.product }}-shared-infra-staging"
-          resourceGroupName: "${{ parameters.product }}-shared-infra-data-staging"
-        ${{ else }}:
-          postgresName: "${{ parameters.product }}-shared-infra-${{ parameters.environment }}"
-          resourceGroupName: "${{ parameters.product }}-shared-infra-data-${{ parameters.environment }}"
-        ruleName: "AzDoAgent"
-        addCurrentUsersIp: true
-
+  
   - template: ../steps/tf-apply.yaml
     parameters:
       subscription: ${{ parameters.subscription }}
