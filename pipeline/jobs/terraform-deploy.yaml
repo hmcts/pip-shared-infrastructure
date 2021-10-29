@@ -80,7 +80,7 @@ jobs:
       subscriptionName: ${{ parameters.subscription }}
 
   - ${{ if eq(parameters.serviceName,'SharedInfra') }}:
-    - template: templates\Azure\Postgres\firewall.yaml
+    - template: templates\Azure\Postgres\firewall.yaml@azTemplates
       parameters:
         subscription: ${{ parameters.subscription }}
         ${{ if eq(parameters.environment,'sbox') }}:
