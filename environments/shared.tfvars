@@ -32,3 +32,4 @@ apim_rules = {
 }
 
 otp_app_names = ["PIP-ACCOUNT-MANAGEMENT"]
+databases     = ["subscriptions"]

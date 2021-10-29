@@ -35,3 +35,10 @@ variable "sa_account_replication_type" {
   type    = string
   default = "RAGRS"
 }
+
+#Databases
+variable "databases" {
+  type        = list(string)
+  description = "List of Databases Names to create"
+  default     = []
+}
