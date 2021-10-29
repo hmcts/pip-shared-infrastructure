@@ -104,18 +104,18 @@ module "dtu_sa" {
 }
 
 module "databases" {
-  for_each         = { for database in var.databases : database => database }
-  source           = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=master"
-  product          = local.product
-  component        = "shared-infra"
-  location         = var.location
-  env              = local.env_long_name
-  postgresql_user  = local.postgresql_user
-  database_name    = each.value
-  common_tags      = local.common_tags
-  subscription     = local.env_long_name
-  business_area    = "SDS"
-  postgres_verison = 10
+  for_each           = { for database in var.databases : database => database }
+  source             = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=master"
+  product            = local.product
+  component          = "shared-infra"
+  location           = var.location
+  env                = local.env_long_name
+  postgresql_user    = local.postgresql_user
+  database_name      = each.value
+  common_tags        = local.common_tags
+  subscription       = local.env_long_name
+  business_area      = "SDS"
+  postgresql_version = 10
 
   key_vault_rg   = "genesis-rg"
   key_vault_name = "dtssharedservices${var.environment}kv"
