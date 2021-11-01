@@ -103,11 +103,18 @@ module "dtu_sa" {
   team_contact = local.team_contact
 }
 
+data "azurerm_subnet" "postgres" {
+  name                 = "iaas"
+  resource_group_name  = "ss-${var.env}-network-rg"
+  virtual_network_name = "ss-${var.env}-vnet"
+}
+
 module "databases" {
   for_each           = { for database in var.databases : database => database }
-  source             = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=master"
+  source             = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=postgresql_tf"
   product            = local.product
   component          = "shared-infra"
+  subnet_id          = data.azurerm_subnet.postgres.id
   location           = var.location
   env                = local.env_long_name
   postgresql_user    = local.postgresql_user
