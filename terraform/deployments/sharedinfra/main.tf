@@ -111,7 +111,7 @@ data "azurerm_subnet" "postgres" {
 
 module "databases" {
   for_each           = { for database in var.databases : database => database }
-  source             = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=postgresql_tf"
+  source             = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=subnet-filename-update"
   product            = local.product
   component          = "shared-infra"
   #subnet_id          = data.azurerm_subnet.postgres.id
