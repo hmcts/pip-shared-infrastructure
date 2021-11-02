@@ -26,6 +26,11 @@ variable "server_name" {
 variable "postgresql_user" {}
 
 ## Server Defaults
+variable "subnet_names" {
+  type        = list(string)
+  description = "List of SDS VNet Subnets to add to firewall"
+  default     = ["iaas", "aks-00", "aks-01"]
+}
 variable "postgresql_listen_port" {
   default = "5432"
 }
