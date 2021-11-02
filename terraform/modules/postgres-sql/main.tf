@@ -45,7 +45,7 @@ data "azuread_group" "db_admin" {
 }
 
 resource "azurerm_postgresql_active_directory_administrator" "admin" {
-  for_each            = { for database in azurerm_postgresql_database.postgres-dbs : database => database }
+  for_each            = { for database in azurerm_postgresql_database.postgres-dbs : database.server_name => database }
   server_name         = each.value.server_name
   resource_group_name = var.resource_group_name
   login               = local.admin_group
