@@ -1,11 +1,8 @@
 # pip-apim-infrastructure
 Repository for deploying support infrastructure for PIP APIM
 
-### PostgresSQL release issue
-Due to Azure DevOps having dynamic build server, we need to white list the IP address during deployment.
-There is a task to do this, but it happens before the database is created.
-Therefore, if it is a new build it will fail on the first run, but on the second run the database should be created, so it will work.
-Fix for this is to add the script to whitelist in the postgres module between the DB deployment and user access.
+### PostgresSQL Deployment
+The infrastructure to deploy Databases for PIP services are done in their respective repositories using the Jenkins pipeline.
 
 ### Monitoring and Alerting:
 If you need to update web test endpoint, add or modify `var.ping_tests` in /environments/*env*.tfvars:
