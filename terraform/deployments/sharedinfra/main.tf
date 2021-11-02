@@ -7,7 +7,6 @@ locals {
   team_name                = "PIP DevOps"
   team_contact             = "#vh-devops"
   env_long_name            = var.environment == "sbox" ? "sandbox" : var.environment == "stg" ? "staging" : var.environment
-  postgresql_user          = "pipdbadmin"
 }
 
 module "ctags" {
@@ -100,16 +99,4 @@ module "dtu_sa" {
 
   team_name    = local.team_name
   team_contact = local.team_contact
-}
-
-module "databases" {
-  source              = "../../modules/postgres-sql"
-  product             = local.product
-  database_names      = var.databases
-  location            = var.location
-  environment         = var.environment
-  postgresql_user     = local.postgresql_user
-  common_tags         = local.common_tags
-  server_name         = "${local.product}-postgres-sql-${var.environment}-server"
-  resource_group_name = local.resource_group_name
 }
