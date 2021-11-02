@@ -7,6 +7,10 @@ locals {
   team_name                = "PIP DevOps"
   team_contact             = "#vh-devops"
   env_long_name            = var.environment == "sbox" ? "sandbox" : var.environment == "stg" ? "staging" : var.environment
+<<<<<<< HEAD
+=======
+  postgresql_user          = "pipdbadmin"
+>>>>>>> master
 }
 
 module "ctags" {
