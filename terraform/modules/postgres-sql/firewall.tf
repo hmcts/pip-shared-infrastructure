@@ -10,6 +10,6 @@ resource "azurerm_postgresql_virtual_network_rule" "postgres-vnet-rules" {
   name                                 = each.value.name
   resource_group_name                  = var.resource_group_name
   server_name                          = var.server_name
-  subnet_id                            = each.value.internal.id
+  subnet_id                            = each.value.id
   ignore_missing_vnet_service_endpoint = true
 }
