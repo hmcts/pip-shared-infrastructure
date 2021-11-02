@@ -25,7 +25,7 @@ resource "azurerm_postgresql_server" "postgres-paas" {
   geo_redundant_backup_enabled     = var.georedundant_backup
   ssl_enforcement_enabled          = true
   ssl_minimal_tls_version_enforced = "TLS1_2"
-  public_network_access_enabled    = false
+  public_network_access_enabled    = true
 
   tags = var.common_tags
 }
