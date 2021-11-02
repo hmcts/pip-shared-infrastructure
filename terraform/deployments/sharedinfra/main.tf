@@ -114,7 +114,7 @@ module "databases" {
   source             = "git::https://github.com/hmcts/cnp-module-postgres.git?ref=subnet-filename-update"
   product            = local.product
   component          = "shared-infra"
-  #subnet_id          = data.azurerm_subnet.postgres.id
+  subnet_id          = data.azurerm_subnet.postgres.id
   location           = var.location
   env                = local.env_long_name
   postgresql_user    = local.postgresql_user
