@@ -4,12 +4,15 @@ module "aks-mi" {
   managed_identity_name = "aks-${var.environment}-mi"
   resource_group_name   = "genesis-rg"
 }
+module "jenkins_ptl_mi" {
+  source = "../../modules/managed-identity/data"
+
+  managed_identity_name = "jenkins-ptl-mi"
+  resource_group_name   = "managed-identities-ptl-rg"
+}
 
 data "azuread_application" "cft_client" {
   display_name = "cft-client"
-}
-data "azuread_application" "jenkins_ptl_mi" {
-  display_name = "jenkins-ptl-mi"
 }
 
 module "keyvault-policy" {
@@ -28,7 +31,7 @@ module "keyvault-policy" {
     },
     "jenkins-ptl-mi" = {
       tenant_id               = data.azurerm_client_config.current.tenant_id
-      object_id               = data.azuread_application.jenkins_ptl_mi.object_id
+      object_id               = module.aks-mi.principal_id
       key_permissions         = []
       secret_permissions      = ["Get", "List", "Set", "Delete", "Recover", "Backup", "Restore"]
       certificate_permissions = []
@@ -36,7 +39,7 @@ module "keyvault-policy" {
     },
     "aks-${var.environment}-mi" = {
       tenant_id               = data.azurerm_client_config.current.tenant_id
-      object_id               = module.aks-mi.principal_id
+      object_id               = module.jenkins_ptl_mi.principal_id
       key_permissions         = []
       secret_permissions      = ["Get", "List", "Set", "Delete", "Recover", "Backup", "Restore"]
       certificate_permissions = []
