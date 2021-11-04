@@ -8,6 +8,9 @@ module "aks-mi" {
 data "azuread_application" "cft_client" {
   display_name = "cft-client"
 }
+data "azuread_application" "jenkins_ptl_mi" {
+  display_name = "jenkins-ptl-mi"
+}
 
 module "keyvault-policy" {
   source = "../../modules/key-vault/access-policy"
@@ -20,6 +23,14 @@ module "keyvault-policy" {
       object_id               = data.azuread_application.cft_client.object_id
       key_permissions         = []
       secret_permissions      = ["get"]
+      certificate_permissions = []
+      storage_permissions     = []
+    },
+    "jenkins-ptl-mi" = {
+      tenant_id               = data.azurerm_client_config.current.tenant_id
+      object_id               = data.azuread_application.jenkins_ptl_mi.object_id
+      key_permissions         = []
+      secret_permissions      = ["Get", "List", "Set", "Delete", "Recover", "Backup", "Restore"]
       certificate_permissions = []
       storage_permissions     = []
     },
