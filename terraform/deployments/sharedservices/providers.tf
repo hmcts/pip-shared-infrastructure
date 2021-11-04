@@ -25,3 +25,8 @@ provider "azuread" {
   client_secret = var.otp_client_secret
   tenant_id     = var.opt_tenant_id
 }
+provider "azurerm" {
+  features {}
+  alias       = "ptl"
+  subscription_id = "6c4d2513-a873-41b4-afdd-b05a33206631"
+}
