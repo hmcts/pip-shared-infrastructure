@@ -1,12 +1,9 @@
-module "aks-mi" {
-  source = "../../modules/managed-identity/data"
-
-  managed_identity_name = "aks-${var.environment}-mi"
-  resource_group_name   = "genesis-rg"
+data "azurerm_user_assigned_identity" "aks_mi" {
+  provider            = azurerm.ptl
+  name                = "aks-${var.environment}-mi"
+  resource_group_name = "genesis-rg"
 }
-
-
-data "azurerm_user_assigned_identity" "mi" {
+data "azurerm_user_assigned_identity" "jenkins_ptl_mi" {
   provider            = azurerm.ptl
   name                = "jenkins-ptl-mi"
   resource_group_name = "managed-identities-ptl-rg"
@@ -32,7 +29,7 @@ module "keyvault-policy" {
     },
     "jenkins-ptl-mi" = {
       tenant_id               = data.azurerm_client_config.current.tenant_id
-      object_id               = data.azurerm_user_assigned_identity.mi.principal_id
+      object_id               = data.azurerm_user_assigned_identity.jenkins_ptl_mi.principal_id
       key_permissions         = []
       secret_permissions      = ["Get", "List", "Set", "Delete", "Recover", "Backup", "Restore"]
       certificate_permissions = []
@@ -40,7 +37,7 @@ module "keyvault-policy" {
     },
     "aks-${var.environment}-mi" = {
       tenant_id               = data.azurerm_client_config.current.tenant_id
-      object_id               = module.aks-mi.principal_id
+      object_id               = data.azurerm_user_assigned_identity.aks_mi.principal_id
       key_permissions         = []
       secret_permissions      = ["Get", "List", "Set", "Delete", "Recover", "Backup", "Restore"]
       certificate_permissions = []

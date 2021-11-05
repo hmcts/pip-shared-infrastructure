@@ -35,6 +35,12 @@ variable "secrets_arr" {
   default = []
 }
 
+## PLT Subscription
+variable "ptl_subscription_id" {
+  type        = string
+  description = "PlatOps Subscription ID"
+}
+
 ## OTP Subscription
 variable "opt_tenant_id" {
   type        = string
