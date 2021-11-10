@@ -100,3 +100,11 @@ module "dtu_sa" {
   team_name    = local.team_name
   team_contact = local.team_contact
 }
+
+module "apim_product" {
+  source         = "git::https://github.com/hmcts/terraform-module-apim-product"
+  env    = var.environment
+  product        = local.product
+  department     = "sds"
+  product_policy = file("./resources/product-policy.xml")
+}
