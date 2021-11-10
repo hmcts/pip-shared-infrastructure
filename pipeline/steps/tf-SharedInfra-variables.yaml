@@ -22,7 +22,7 @@ steps:
   - task: replacetokens@3
     displayName: Replace Tokens in Policy files
     inputs:
-      targetFiles: $(Build.SourcesDirectory)/terraform/deployments/sharedinfra/resources
+      targetFiles: $(Build.SourcesDirectory)/terraform/deployments/sharedinfra/resources/*-policy.xml
       encoding: 'auto'
       writeBOM: true
       verbosity: 'detailed'
