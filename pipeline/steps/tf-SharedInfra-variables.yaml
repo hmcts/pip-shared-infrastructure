@@ -19,6 +19,21 @@ parameters:
 
 steps:
 
+  - task: replacetokens@3
+    displayName: Replace Tokens in Policy files
+    inputs:
+      targetFiles: $(Build.SourcesDirectory)/terraform/deployments/sharedinfra/resources
+      encoding: 'auto'
+      writeBOM: true
+      verbosity: 'detailed'
+      actionOnMissing: 'warn'
+      keepToken: true
+      tokenPrefix: '#{'
+      tokenSuffix: '}#'
+      useLegacyPattern: false
+      enableTelemetry: true
+      continueOnError: true
+
   - bash: |
       variableName="${{ parameters.variableName }}"
 
